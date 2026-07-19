@@ -282,3 +282,202 @@ mysql> select dept,avg(salary) from emp group by dept having avg(salary) > 65000
 +---------+-------------+
 2 rows in set (0.000 sec)
 
+mysql> -- Q16. Show cities where total salary exceeds 600000.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> select city,sum(salary) from emp group by city having sum(city) > 600000;
+Empty set, 50 warnings (0.000 sec)
+
+mysql> select city,sum(salary) from emp group by city having sum(salary) > 600000;
++----------+-------------+
+| city     | sum(salary) |
++----------+-------------+
+| New York |      859000 |
+| Chicago  |      811000 |
+| Houston  |      675000 |
+| Phoenix  |      633000 |
++----------+-------------+
+4 rows in set (0.000 sec)
+
+mysql> -- Q17. Show roles with more than 7 employees.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> select role,count(name) from emp group by role having count(name)>7;
++-----------+-------------+
+| role      | count(name) |
++-----------+-------------+
+| Manager   |          12 |
+| Analyst   |           9 |
+| Executive |          10 |
++-----------+-------------+
+3 rows in set (0.000 sec)
+
+mysql> -- Q18. Show regions where the average salary is below 70000.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> select region,avg(salary) from emp group by region having avg(salary) > 70000;
++--------+-------------+
+| region | avg(salary) |
++--------+-------------+
+| East   |  71583.3333 |
+| South  |  71294.1176 |
+| West   |  70333.3333 |
++--------+-------------+
+3 rows in set (0.000 sec)
+
+mysql> select region,avg(salary) from emp group by region having avg(salary) <70000;
++---------+-------------+
+| region  | avg(salary) |
++---------+-------------+
+| Midwest |  67583.3333 |
++---------+-------------+
+1 row in set (0.000 sec)
+
+mysql> -- Q19. Show departments where the max salary is at least 90000.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> select dept,max(salary) from emp group by dept having max(salary) > 90000;
++------+-------------+
+| dept | max(salary) |
++------+-------------+
+| IT   |       97000 |
++------+-------------+
+1 row in set (0.000 sec)
+
+mysql> -- Q20. Show states where total headcount is more than 12.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> SELECT state,
+    ->        COUNT(*) AS headcount
+    -> FROM employees
+    -> GROUP BY state
+    -> HAVING COUNT(*) > 12;
+ERROR 1054 (42S22): Unknown column 'state' in 'field list'
+mysql> -- Q21. Show cities where the minimum salary is above 60000.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> select city,min(salary) from emp group by city having min(salary) > 60000;
+Empty set (0.000 sec)
+
+mysql> select city,min(salary) from emp group by city having min(salary) < 60000;
++----------+-------------+
+| city     | min(salary) |
++----------+-------------+
+| New York |       55000 |
+| Chicago  |       52000 |
+| Houston  |       56000 |
+| Phoenix  |       51000 |
++----------+-------------+
+4 rows in set (0.001 sec)
+
+mysql> -- Q22. Count employees grouped by department AND city.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> select count(name),dept,city from emp group by dept,city;
++-------------+-----------+----------+
+| count(name) | dept      | city     |
++-------------+-----------+----------+
+|           2 | HR        | New York |
+|           3 | IT        | Chicago  |
+|           4 | Finance   | New York |
+|           3 | HR        | Chicago  |
+|           4 | IT        | Houston  |
+|           2 | Marketing | Chicago  |
+|           4 | Finance   | Chicago  |
+|           1 | Marketing | Houston  |
+|           3 | IT        | New York |
+|           1 | Finance   | Houston  |
+|           3 | Marketing | New York |
+|           3 | HR        | Houston  |
+|           1 | HR        | Dallas   |
+|           3 | Finance   | Dallas   |
+|           2 | Marketing | Phoenix  |
+|           3 | IT        | Phoenix  |
+|           3 | HR        | Phoenix  |
+|           1 | IT        | Dallas   |
+|           3 | Marketing | Dallas   |
+|           1 | Finance   | Phoenix  |
++-------------+-----------+----------+
+20 rows in set (0.000 sec)
+
+mysql> -- Q23. Find average salary grouped by department AND gender.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> select avg(salary),dept,gender from emp group by dept,gender;
++-------------+-----------+--------+
+| avg(salary) | dept      | gender |
++-------------+-----------+--------+
+|  58888.8889 | HR        | F      |
+|  83100.0000 | IT        | M      |
+|  74400.0000 | Finance   | F      |
+|  53000.0000 | HR        | M      |
+|  87500.0000 | IT        | F      |
+|  70375.0000 | Finance   | M      |
+|  64444.4444 | Marketing | F      |
+|  65000.0000 | Marketing | M      |
++-------------+-----------+--------+
+8 rows in set (0.000 sec)
+
+mysql> -- Q24. Count employees grouped by region AND role.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> select count(emp),region,role from emp group me region,role;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'me region,role' at line 1
+mysql> select count(emp),region,role from emp group by region,role;
+ERROR 1054 (42S22): Unknown column 'emp' in 'field list'
+mysql> select count(name),region,role from emp group by region,role;
++-------------+---------+------------+
+| count(name) | region  | role       |
++-------------+---------+------------+
+|           2 | East    | Manager    |
+|           1 | Midwest | Developer  |
+|           3 | East    | Analyst    |
+|           5 | Midwest | Executive  |
+|           3 | South   | Senior Dev |
+|           2 | South   | Lead       |
+|           1 | East    | Executive  |
+|           1 | Midwest | Analyst    |
+|           6 | South   | Manager    |
+|           2 | East    | Developer  |
+|           3 | Midwest | Senior Dev |
+|           3 | South   | Executive  |
+|           3 | East    | Lead       |
+|           2 | South   | Analyst    |
+|           3 | West    | Manager    |
+|           1 | West    | Architect  |
+|           1 | West    | Executive  |
+|           3 | West    | Analyst    |
+|           1 | South   | Developer  |
+|           1 | West    | Lead       |
+|           1 | Midwest | Manager    |
+|           1 | East    | Architect  |
+|           1 | Midwest | Lead       |
++-------------+---------+------------+
+23 rows in set (0.000 sec)
+
+mysql> -- Q25. Find max salary grouped by state AND department.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> select max(salary),state,dept from emp group by state,dept;
++-------------+-------+-----------+
+| max(salary) | state | dept      |
++-------------+-------+-----------+
+|       58000 | NY    | HR        |
+|       82000 | IL    | IT        |
+|       77000 | NY    | Finance   |
+|       55000 | IL    | HR        |
+|       90000 | TX    | IT        |
+|       63000 | IL    | Marketing |
+|       81000 | IL    | Finance   |
+|       68000 | TX    | Marketing |
+|       97000 | NY    | IT        |
+|       73000 | TX    | Finance   |
+|       71000 | NY    | Marketing |
+|       79000 | TX    | HR        |
+|       67000 | AZ    | Marketing |
+|       95000 | AZ    | IT        |
+|       59000 | AZ    | HR        |
+|       66000 | AZ    | Finance   |
++-------------+-------+-----------+
+16 rows in set (0.000 sec)
+
