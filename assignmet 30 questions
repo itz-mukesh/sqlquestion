@@ -1,0 +1,706 @@
+Last login: Sat Jul 18 07:57:40 on console
+/Users/apple/.zprofile:1: no such file or directory: /opt/homebrew/bin/brew
+apple@apples-MacBook-Pro ~ % brew services start mysql
+==> Successfully started `mysql` (label: homebrew.mxcl.mysql)
+apple@apples-MacBook-Pro ~ % mysql -u root -p         
+Enter password: 
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 9
+Server version: 9.4.0 Homebrew
+
+Copyright (c) 2000, 2025, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+    -> role varchar(50) not null^C^C
+
+^C
+mysql> CREATE TABLE Employees (
+    -> EmpID INT PRIMARY KEY,
+    -> Name VARCHAR(50) NOT NULL,
+    -> Dept VARCHAR(50) NOT NULL,
+    -> City VARCHAR(50) NOT NULL,
+    -> Gender CHAR(1) NOT NULL,
+    -> Salary INT NOT NULL,
+    -> JoinDate DATE NOT NULL,
+    -> Role VARCHAR(50) NOT NULL
+    -> );
+Query OK, 0 rows affected (0.008 sec)
+
+mysql> INSERT INTO Employees (EmpID, Name, Dept, City, Gender, Salary, JoinDate, Role) VALUES
+    -> (1,'Alice','HR','New York','F',55000,'2019-03-15','Manager'),
+    -> (2,'Bob','IT','Chicago','M',72000,'2020-07-22','Developer'),
+    -> (3,'Carol','Finance','New York','F',68000,'2018-11-01','Analyst'),
+    -> (4,'David','HR','Chicago','M',52000,'2021-01-10','Executive'),
+    -> (5,'Eve','IT','Houston','F',85000,'2017-06-30','Senior Dev'),
+    -> (6,'Frank','Finance','New York','M',74000,'2019-09-14','Manager'),
+    -> (7,'Grace','Marketing','Chicago','F',60000,'2022-02-28','Executive'),
+    -> (8,'Hank','IT','Houston','M',90000,'2016-04-05','Lead'),
+    -> (9,'Ivy','HR','New York','F',58000,'2020-12-19','Executive'),
+    -> (10,'Jack','Finance','Chicago','M',65000,'2021-03-07','Analyst'),
+    -> (11,'Karen','Marketing','Houston','F',62000,'2018-08-23','Manager'),
+    -> (12,'Leo','IT','New York','M',78000,'2019-11-11','Developer'),
+    -> (13,'Mia','HR','Chicago','F',53000,'2022-05-16','Executive'),
+    -> (14,'Nate','Finance','Houston','M',71000,'2017-12-02','Manager'),
+    -> (15,'Olivia','Marketing','New York','F',66000,'2020-06-18','Analyst'),
+    -> (16,'Paul','IT','Chicago','M',82000,'2018-03-27','Senior Dev'),
+    -> (17,'Quinn','HR','Houston','F',57000,'2021-09-09','Executive'),
+    -> (18,'Rita','Finance','New York','F',76000,'2019-01-25','Lead'),
+    -> (19,'Sam','Marketing','Chicago','M',63000,'2022-07-14','Executive'),
+    -> (20,'Tina','IT','Houston','F',88000,'2016-10-31','Lead'),
+    -> (21,'Uma','HR','New York','F',60000,'2020-04-03','Manager'),
+    -> (22,'Victor','Finance','Chicago','M',69000,'2018-07-19','Analyst'),
+    -> (23,'Wendy','Marketing','Houston','F',64000,'2021-11-27','Manager'),
+    -> (24,'Xander','IT','New York','M',95000,'2015-02-14','Architect'),
+    -> (25,'Yara','HR','Chicago','F',54000,'2022-09-08','Executive'),
+    -> (26,'Zoe','Finance','Houston','F',73000,'2019-05-21','Manager'),
+    -> (27,'Aaron','Marketing','New York','M',67000,'2020-10-15','Analyst'),
+    -> (28,'Bella','IT','Chicago','F',80000,'2017-08-06','Senior Dev'),
+    -> (29,'Carlos','HR','Houston','M',56000,'2021-06-24','Executive'),
+    -> (30,'Diana','Finance','New York','F',77000,'2018-02-09','Lead');
+Query OK, 30 rows affected (0.009 sec)
+Records: 30  Duplicates: 0  Warnings: 0
+
+mysql> select * from employees;
++-------+--------+-----------+----------+--------+--------+------------+------------+
+| EmpID | Name   | Dept      | City     | Gender | Salary | JoinDate   | Role       |
++-------+--------+-----------+----------+--------+--------+------------+------------+
+|     1 | Alice  | HR        | New York | F      |  55000 | 2019-03-15 | Manager    |
+|     2 | Bob    | IT        | Chicago  | M      |  72000 | 2020-07-22 | Developer  |
+|     3 | Carol  | Finance   | New York | F      |  68000 | 2018-11-01 | Analyst    |
+|     4 | David  | HR        | Chicago  | M      |  52000 | 2021-01-10 | Executive  |
+|     5 | Eve    | IT        | Houston  | F      |  85000 | 2017-06-30 | Senior Dev |
+|     6 | Frank  | Finance   | New York | M      |  74000 | 2019-09-14 | Manager    |
+|     7 | Grace  | Marketing | Chicago  | F      |  60000 | 2022-02-28 | Executive  |
+|     8 | Hank   | IT        | Houston  | M      |  90000 | 2016-04-05 | Lead       |
+|     9 | Ivy    | HR        | New York | F      |  58000 | 2020-12-19 | Executive  |
+|    10 | Jack   | Finance   | Chicago  | M      |  65000 | 2021-03-07 | Analyst    |
+|    11 | Karen  | Marketing | Houston  | F      |  62000 | 2018-08-23 | Manager    |
+|    12 | Leo    | IT        | New York | M      |  78000 | 2019-11-11 | Developer  |
+|    13 | Mia    | HR        | Chicago  | F      |  53000 | 2022-05-16 | Executive  |
+|    14 | Nate   | Finance   | Houston  | M      |  71000 | 2017-12-02 | Manager    |
+|    15 | Olivia | Marketing | New York | F      |  66000 | 2020-06-18 | Analyst    |
+|    16 | Paul   | IT        | Chicago  | M      |  82000 | 2018-03-27 | Senior Dev |
+|    17 | Quinn  | HR        | Houston  | F      |  57000 | 2021-09-09 | Executive  |
+|    18 | Rita   | Finance   | New York | F      |  76000 | 2019-01-25 | Lead       |
+|    19 | Sam    | Marketing | Chicago  | M      |  63000 | 2022-07-14 | Executive  |
+|    20 | Tina   | IT        | Houston  | F      |  88000 | 2016-10-31 | Lead       |
+|    21 | Uma    | HR        | New York | F      |  60000 | 2020-04-03 | Manager    |
+|    22 | Victor | Finance   | Chicago  | M      |  69000 | 2018-07-19 | Analyst    |
+|    23 | Wendy  | Marketing | Houston  | F      |  64000 | 2021-11-27 | Manager    |
+|    24 | Xander | IT        | New York | M      |  95000 | 2015-02-14 | Architect  |
+|    25 | Yara   | HR        | Chicago  | F      |  54000 | 2022-09-08 | Executive  |
+|    26 | Zoe    | Finance   | Houston  | F      |  73000 | 2019-05-21 | Manager    |
+|    27 | Aaron  | Marketing | New York | M      |  67000 | 2020-10-15 | Analyst    |
+|    28 | Bella  | IT        | Chicago  | F      |  80000 | 2017-08-06 | Senior Dev |
+|    29 | Carlos | HR        | Houston  | M      |  56000 | 2021-06-24 | Executive  |
+|    30 | Diana  | Finance   | New York | F      |  77000 | 2018-02-09 | Lead       |
++-------+--------+-----------+----------+--------+--------+------------+------------+
+30 rows in set (0.000 sec)
+
+mysql> Q1. Find the total number of employees in each department.
+mysql> -- Q1. Find the total number of employees in each department.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> select count(dept) from group by dept;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'group by dept' at line 1
+mysql> select count(name) from dept;
+ERROR 1146 (42S02): Table 'regex.dept' doesn't exist
+mysql> select dept,count(name) from employees group by dept;
++-----------+-------------+
+| dept      | count(name) |
++-----------+-------------+
+| HR        |           8 |
+| IT        |           8 |
+| Finance   |           8 |
+| Marketing |           6 |
++-----------+-------------+
+4 rows in set (0.000 sec)
+
+mysql> -- Q2. Find the total salary paid per department.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> select dept,sum(salary) from employees group by dept;
++-----------+-------------+
+| dept      | sum(salary) |
++-----------+-------------+
+| HR        |      445000 |
+| IT        |      670000 |
+| Finance   |      573000 |
+| Marketing |      382000 |
++-----------+-------------+
+4 rows in set (0.000 sec)
+
+mysql> -- ⚠ Q3. Find the average salary in each city.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> select city,avg(salary) from employees group by city;
++----------+-------------+
+| city     | avg(salary) |
++----------+-------------+
+| New York |  70363.6364 |
+| Chicago  |  65000.0000 |
+| Houston  |  71777.7778 |
++----------+-------------+
+3 rows in set (0.000 sec)
+
+mysql> -- Q4. Find the maximum salary in each department.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> select dept,max(salary) from employees group by dept;
++-----------+-------------+
+| dept      | max(salary) |
++-----------+-------------+
+| HR        |       60000 |
+| IT        |       95000 |
+| Finance   |       77000 |
+| Marketing |       67000 |
++-----------+-------------+
+4 rows in set (0.000 sec)
+
+mysql> -- Q5. Find the minimum salary in each department.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> select dept,min(salary) from employees group by dept;
++-----------+-------------+
+| dept      | min(salary) |
++-----------+-------------+
+| HR        |       52000 |
+| IT        |       72000 |
+| Finance   |       65000 |
+| Marketing |       60000 |
++-----------+-------------+
+4 rows in set (0.000 sec)
+
+mysql> -- ⚠ Q6. List departments with their employee count, sorted by count descending.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> select dept,count(name) from employees group by dept order by count(name) desc;
++-----------+-------------+
+| dept      | count(name) |
++-----------+-------------+
+| HR        |           8 |
+| IT        |           8 |
+| Finance   |           8 |
+| Marketing |           6 |
++-----------+-------------+
+4 rows in set (0.000 sec)
+
+mysql> -- ⚠ Q7. List cities with total salary, sorted by TotalSalary ascending
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> select city,sum(salary) from employees group by city order by sum(salary) ;
++----------+-------------+
+| city     | sum(salary) |
++----------+-------------+
+| Houston  |      646000 |
+| Chicago  |      650000 |
+| New York |      774000 |
++----------+-------------+
+3 rows in set (0.000 sec)
+
+mysql> -- Q8. List all employees ordered by department (A–Z) then by salary (highest first).
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> select name, dept,salary from employees order by dept aesc , salary desc
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'aesc , salary desc' at line 1
+mysql> select name, dept,salary from employees order by dept asc , salary desc;
++--------+-----------+--------+
+| name   | dept      | salary |
++--------+-----------+--------+
+| Diana  | Finance   |  77000 |
+| Rita   | Finance   |  76000 |
+| Frank  | Finance   |  74000 |
+| Zoe    | Finance   |  73000 |
+| Nate   | Finance   |  71000 |
+| Victor | Finance   |  69000 |
+| Carol  | Finance   |  68000 |
+| Jack   | Finance   |  65000 |
+| Uma    | HR        |  60000 |
+| Ivy    | HR        |  58000 |
+| Quinn  | HR        |  57000 |
+| Carlos | HR        |  56000 |
+| Alice  | HR        |  55000 |
+| Yara   | HR        |  54000 |
+| Mia    | HR        |  53000 |
+| David  | HR        |  52000 |
+| Xander | IT        |  95000 |
+| Hank   | IT        |  90000 |
+| Tina   | IT        |  88000 |
+| Eve    | IT        |  85000 |
+| Paul   | IT        |  82000 |
+| Bella  | IT        |  80000 |
+| Leo    | IT        |  78000 |
+| Bob    | IT        |  72000 |
+| Aaron  | Marketing |  67000 |
+| Olivia | Marketing |  66000 |
+| Wendy  | Marketing |  64000 |
+| Sam    | Marketing |  63000 |
+| Karen  | Marketing |  62000 |
+| Grace  | Marketing |  60000 |
++--------+-----------+--------+
+30 rows in set (0.000 sec)
+
+mysql> -- ⚠ Q9. List all employees ordered by city (A–Z) then by join date (oldest first).
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> select name,JoinDate,city from employees order by city ,joindate asc;
++--------+------------+----------+
+| name   | JoinDate   | city     |
++--------+------------+----------+
+| Bella  | 2017-08-06 | Chicago  |
+| Paul   | 2018-03-27 | Chicago  |
+| Victor | 2018-07-19 | Chicago  |
+| Bob    | 2020-07-22 | Chicago  |
+| David  | 2021-01-10 | Chicago  |
+| Jack   | 2021-03-07 | Chicago  |
+| Grace  | 2022-02-28 | Chicago  |
+| Mia    | 2022-05-16 | Chicago  |
+| Sam    | 2022-07-14 | Chicago  |
+| Yara   | 2022-09-08 | Chicago  |
+| Hank   | 2016-04-05 | Houston  |
+| Tina   | 2016-10-31 | Houston  |
+| Eve    | 2017-06-30 | Houston  |
+| Nate   | 2017-12-02 | Houston  |
+| Karen  | 2018-08-23 | Houston  |
+| Zoe    | 2019-05-21 | Houston  |
+| Carlos | 2021-06-24 | Houston  |
+| Quinn  | 2021-09-09 | Houston  |
+| Wendy  | 2021-11-27 | Houston  |
+| Xander | 2015-02-14 | New York |
+| Diana  | 2018-02-09 | New York |
+| Carol  | 2018-11-01 | New York |
+| Rita   | 2019-01-25 | New York |
+| Alice  | 2019-03-15 | New York |
+| Frank  | 2019-09-14 | New York |
+| Leo    | 2019-11-11 | New York |
+| Uma    | 2020-04-03 | New York |
+| Olivia | 2020-06-18 | New York |
+| Aaron  | 2020-10-15 | New York |
+| Ivy    | 2020-12-19 | New York |
++--------+------------+----------+
+30 rows in set (0.000 sec)
+
+mysql> -- ⚠ Q10. List all employees ordered by role (A–Z) then by salary (lowest first).
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> select name,role,salary from employees order by role,salary;
++--------+------------+--------+
+| name   | role       | salary |
++--------+------------+--------+
+| Jack   | Analyst    |  65000 |
+| Olivia | Analyst    |  66000 |
+| Aaron  | Analyst    |  67000 |
+| Carol  | Analyst    |  68000 |
+| Victor | Analyst    |  69000 |
+| Xander | Architect  |  95000 |
+| Bob    | Developer  |  72000 |
+| Leo    | Developer  |  78000 |
+| David  | Executive  |  52000 |
+| Mia    | Executive  |  53000 |
+| Yara   | Executive  |  54000 |
+| Carlos | Executive  |  56000 |
+| Quinn  | Executive  |  57000 |
+| Ivy    | Executive  |  58000 |
+| Grace  | Executive  |  60000 |
+| Sam    | Executive  |  63000 |
+| Rita   | Lead       |  76000 |
+| Diana  | Lead       |  77000 |
+| Tina   | Lead       |  88000 |
+| Hank   | Lead       |  90000 |
+| Alice  | Manager    |  55000 |
+| Uma    | Manager    |  60000 |
+| Karen  | Manager    |  62000 |
+| Wendy  | Manager    |  64000 |
+| Nate   | Manager    |  71000 |
+| Zoe    | Manager    |  73000 |
+| Frank  | Manager    |  74000 |
+| Bella  | Senior Dev |  80000 |
+| Paul   | Senior Dev |  82000 |
+| Eve    | Senior Dev |  85000 |
++--------+------------+--------+
+30 rows in set (0.000 sec)
+
+mysql> -- ⚠ Q11. Show only departments that have more than 7 employees.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> select count(*) as employyy from employees
+    -> ;
++----------+
+| employyy |
++----------+
+|       30 |
++----------+
+1 row in set (0.002 sec)
+
+mysql> select dept,count(*) as employyy from employees group by dept having count(*) > 7;
++---------+----------+
+| dept    | employyy |
++---------+----------+
+| HR      |        8 |
+| IT      |        8 |
+| Finance |        8 |
++---------+----------+
+3 rows in set (0.001 sec)
+
+mysql> select dept,avg(salary) as avs from employees group by dept having avg(salary) > 65000;
++---------+------------+
+| dept    | avs        |
++---------+------------+
+| IT      | 83750.0000 |
+| Finance | 71625.0000 |
++---------+------------+
+2 rows in set (0.001 sec)
+
+mysql> -- ⚠ Q13. Show cities where the total salary bill is greater than 650000.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> select city,sum(salary) as total_salary from employees group by city having sum(salary)>650000;
++----------+--------------+
+| city     | total_salary |
++----------+--------------+
+| New York |       774000 |
++----------+--------------+
+1 row in set (0.000 sec)
+
+mysql> -- Q14. Show departments where the maximum salary is at least 80000.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> select dept,max(salary) as mxs from employees group by dept having max(salary) >= 80000;
++------+-------+
+| dept | mxs   |
++------+-------+
+| IT   | 95000 |
++------+-------+
+1 row in set (0.000 sec)
+
+    -> mysql> ^C
+
+^C
+mysql> -- ⚠ Q15. Show roles that appear more than 5 times in the table.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> select roles,count(roles) as countrole from employees group by role having count(role) > 5;
+ERROR 1054 (42S22): Unknown column 'roles' in 'field list'
+mysql> select role,count(role) as countrole from employees group by role having count(role) > 5;
++-----------+-----------+
+| role      | countrole |
++-----------+-----------+
+| Manager   |         7 |
+| Executive |         8 |
++-----------+-----------+
+2 rows in set (0.000 sec)
+
+mysql> -- ⚠ Q16. Find the overall average salary of all employees.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> select avg(salary) as avgs from employees;
++------------+
+| avgs       |
++------------+
+| 69000.0000 |
++------------+
+1 row in set (0.000 sec)
+
+mysql> -- Q17. Count how many female employees exist in each department.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> SELECT DEPT,COUNT(*) AS FEMALECOUNT FROM EMPLOYEES WHERE GENDER = 'F' GROUP BY DEPT;
++-----------+-------------+
+| DEPT      | FEMALECOUNT |
++-----------+-------------+
+| HR        |           6 |
+| Finance   |           4 |
+| IT        |           3 |
+| Marketing |           4 |
++-----------+-------------+
+4 rows in set (0.000 sec)
+
+mysql> -- Q18. Find the highest and lowest salary across the entire company.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> SELECT MAX(SALARY),MIN(SALARY) FROM EMPLOYEES;
++-------------+-------------+
+| MAX(SALARY) | MIN(SALARY) |
++-------------+-------------+
+|       95000 |       52000 |
++-------------+-------------+
+1 row in set (0.000 sec)
+
+mysql> -- ⚠ Q19. Find the total salary paid to employees who joined after 2019-01-01.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> SELECT SUM(SALARY) AS SUMSAL FROM EMPLOYEES WHERE JOINDATE > '2019-01-01';
++---------+
+| SUMSAL  |
++---------+
+| 1203000 |
++---------+
+1 row in set (0.000 sec)
+
+mysql> -- ⚠ Q20. Find the average salary grouped by gender.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> SELECT GENDER,AVG(SALARY) FROM EMPLOYEES GROUP BY GENDER;
++--------+-------------+
+| GENDER | AVG(SALARY) |
++--------+-------------+
+| F      |  66823.5294 |
+| M      |  71846.1538 |
++--------+-------------+
+2 rows in set (0.000 sec)
+
+mysql> -- ⚠ Q21. Find total employees grouped by department AND city.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> SELECT CITY,COUNT(NAME),DEPT FROM EMPLOYEES GROUP BY DEPT,CITY ORDER BY DEPT;
++----------+-------------+-----------+
+| CITY     | COUNT(NAME) | DEPT      |
++----------+-------------+-----------+
+| Chicago  |           2 | Finance   |
+| Houston  |           2 | Finance   |
+| New York |           4 | Finance   |
+| Chicago  |           3 | HR        |
+| Houston  |           2 | HR        |
+| New York |           3 | HR        |
+| Chicago  |           3 | IT        |
+| Houston  |           3 | IT        |
+| New York |           2 | IT        |
+| Chicago  |           2 | Marketing |
+| Houston  |           2 | Marketing |
+| New York |           2 | Marketing |
++----------+-------------+-----------+
+12 rows in set (0.000 sec)
+
+mysql> -- ⚠ Q22. Find average salary grouped by department AND gender.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> SELECT AVG(SALARY),DEPT,GENDER FROM EMPLOYEES GROUP BY DEPT,GENDER ORDER BY DEPT;
++-------------+-----------+--------+
+| AVG(SALARY) | DEPT      | GENDER |
++-------------+-----------+--------+
+|  73500.0000 | Finance   | F      |
+|  69750.0000 | Finance   | M      |
+|  56166.6667 | HR        | F      |
+|  54000.0000 | HR        | M      |
+|  84333.3333 | IT        | F      |
+|  83400.0000 | IT        | M      |
+|  63000.0000 | Marketing | F      |
+|  65000.0000 | Marketing | M      |
++-------------+-----------+--------+
+8 rows in set (0.001 sec)
+
+mysql> -- Q23. Find total salary grouped by city AND role, ordered by city and total salary descending.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> SELECT CITY,ROLE ,SUM(SALARY) AS TOTAL_SALARY FROM EMPLOYEES GROUP BY CITY,ROLE ORDER BY CITY ASC , TOTAL_SALARY DESC;
++----------+------------+--------------+
+| CITY     | ROLE       | TOTAL_SALARY |
++----------+------------+--------------+
+| Chicago  | Executive  |       282000 |
+| Chicago  | Senior Dev |       162000 |
+| Chicago  | Analyst    |       134000 |
+| Chicago  | Developer  |        72000 |
+| Houston  | Manager    |       270000 |
+| Houston  | Lead       |       178000 |
+| Houston  | Executive  |       113000 |
+| Houston  | Senior Dev |        85000 |
+| New York | Analyst    |       201000 |
+| New York | Manager    |       189000 |
+| New York | Lead       |       153000 |
+| New York | Architect  |        95000 |
+| New York | Developer  |        78000 |
+| New York | Executive  |        58000 |
++----------+------------+--------------+
+14 rows in set (0.001 sec)
+
+mysql> -- ⚠ Q24. Count employees grouped by department AND role, show only groups with more than 1 employee.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> SELECT COUNT(*) AS EMPCOUNT, ROLE, DEPT FROM EMPLOYEES GROUP BY ROLE,DEPT HAVING COUNT(*) > 1, ORDER BY DEPT;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ', ORDER BY DEPT' at line 1
+mysql> SELECT COUNT(*) AS EMPCOUNT, ROLE, DEPT FROM EMPLOYEES GROUP BY ROLE,DEPT HAVING COUNT(*) > 1  ORDER BY DEPT;
++----------+------------+-----------+
+| EMPCOUNT | ROLE       | DEPT      |
++----------+------------+-----------+
+|        3 | Analyst    | Finance   |
+|        3 | Manager    | Finance   |
+|        2 | Lead       | Finance   |
+|        2 | Manager    | HR        |
+|        6 | Executive  | HR        |
+|        2 | Developer  | IT        |
+|        3 | Senior Dev | IT        |
+|        2 | Lead       | IT        |
+|        2 | Executive  | Marketing |
+|        2 | Manager    | Marketing |
+|        2 | Analyst    | Marketing |
++----------+------------+-----------+
+11 rows in set (0.001 sec)
+
+mysql> -- Q25. Find max salary grouped by city AND gender.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> SELECT MAX(SALARY) AS MXS, CITY,GENDER FROM EMPLOYEES GROUP BY CITY,GENDER ORDER BY CITY;
++-------+----------+--------+
+| MXS   | CITY     | GENDER |
++-------+----------+--------+
+| 80000 | Chicago  | F      |
+| 82000 | Chicago  | M      |
+| 88000 | Houston  | F      |
+| 90000 | Houston  | M      |
+| 77000 | New York | F      |
+| 95000 | New York | M      |
++-------+----------+--------+
+6 rows in set (0.000 sec)
+
+mysql> -- ⚠ Q26. Show departments with avg salary > 60000, ordered by avg salary descending.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> SELECT DEPT,AVG(SALARY) FROM EMPLOYEES GROUP BY DEPT HAVING AVG(SALARY) > 60000 ORDER BY AVG(SALARY) DESC;
++-----------+-------------+
+| DEPT      | AVG(SALARY) |
++-----------+-------------+
+| IT        |  83750.0000 |
+| Finance   |  71625.0000 |
+| Marketing |  63666.6667 |
++-----------+-------------+
+3 rows in set (0.001 sec)
+
+mysql> SELECT CITY,DEPT,COUNT(*) FROM EMPLOYEES GROUP BY CITY,DEPT HAVING COUNT(*) > 1 ORDER BY COUNT(*) DESC; 
++----------+-----------+----------+
+| CITY     | DEPT      | COUNT(*) |
++----------+-----------+----------+
+| New York | Finance   |        4 |
+| New York | HR        |        3 |
+| Chicago  | IT        |        3 |
+| Chicago  | HR        |        3 |
+| Houston  | IT        |        3 |
+| Chicago  | Marketing |        2 |
+| Chicago  | Finance   |        2 |
+| Houston  | Marketing |        2 |
+| New York | IT        |        2 |
+| Houston  | Finance   |        2 |
+| New York | Marketing |        2 |
+| Houston  | HR        |        2 |
++----------+-----------+----------+
+12 rows in set (0.000 sec)
+
+mysql> -- ⚠ Q28. Show roles where total salary exceeds 300000, ordered by total salary ascending.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> SELECT ROLE,SUM(SALARY) FROM EMPLOYEES GROUP BY ROLE HAVING SUM(SALARY)>300000 ORDER BY SUM(SALARY);
++-----------+-------------+
+| ROLE      | SUM(SALARY) |
++-----------+-------------+
+| Lead      |      331000 |
+| Analyst   |      335000 |
+| Executive |      453000 |
+| Manager   |      459000 |
++-----------+-------------+
+4 rows in set (0.000 sec)
+
+mysql> -- 29. List each employee's name in UPPER CASE along with the year they joined, ordered by join year
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> select uppercase(name),joindate from employees order by year(joindate) desc;
+ERROR 1305 (42000): FUNCTION regex.uppercase does not exist
+mysql> select upper(name),joindate from employees order by year(joindate) desc;
++-------------+------------+
+| upper(name) | joindate   |
++-------------+------------+
+| GRACE       | 2022-02-28 |
+| YARA        | 2022-09-08 |
+| MIA         | 2022-05-16 |
+| SAM         | 2022-07-14 |
+| CARLOS      | 2021-06-24 |
+| DAVID       | 2021-01-10 |
+| JACK        | 2021-03-07 |
+| WENDY       | 2021-11-27 |
+| QUINN       | 2021-09-09 |
+| UMA         | 2020-04-03 |
+| BOB         | 2020-07-22 |
+| AARON       | 2020-10-15 |
+| IVY         | 2020-12-19 |
+| OLIVIA      | 2020-06-18 |
+| FRANK       | 2019-09-14 |
+| ZOE         | 2019-05-21 |
+| LEO         | 2019-11-11 |
+| ALICE       | 2019-03-15 |
+| RITA        | 2019-01-25 |
+| PAUL        | 2018-03-27 |
+| VICTOR      | 2018-07-19 |
+| KAREN       | 2018-08-23 |
+| CAROL       | 2018-11-01 |
+| DIANA       | 2018-02-09 |
+| NATE        | 2017-12-02 |
+| EVE         | 2017-06-30 |
+| BELLA       | 2017-08-06 |
+| TINA        | 2016-10-31 |
+| HANK        | 2016-04-05 |
+| XANDER      | 2015-02-14 |
++-------------+------------+
+30 rows in set (0.000 sec)
+
+mysql> select upper(name),joindate from employees order by year(joindate);
++-------------+------------+
+| upper(name) | joindate   |
++-------------+------------+
+| XANDER      | 2015-02-14 |
+| HANK        | 2016-04-05 |
+| TINA        | 2016-10-31 |
+| BELLA       | 2017-08-06 |
+| EVE         | 2017-06-30 |
+| NATE        | 2017-12-02 |
+| DIANA       | 2018-02-09 |
+| KAREN       | 2018-08-23 |
+| PAUL        | 2018-03-27 |
+| VICTOR      | 2018-07-19 |
+| CAROL       | 2018-11-01 |
+| LEO         | 2019-11-11 |
+| FRANK       | 2019-09-14 |
+| RITA        | 2019-01-25 |
+| ZOE         | 2019-05-21 |
+| ALICE       | 2019-03-15 |
+| IVY         | 2020-12-19 |
+| OLIVIA      | 2020-06-18 |
+| UMA         | 2020-04-03 |
+| AARON       | 2020-10-15 |
+| BOB         | 2020-07-22 |
+| JACK        | 2021-03-07 |
+| QUINN       | 2021-09-09 |
+| DAVID       | 2021-01-10 |
+| WENDY       | 2021-11-27 |
+| CARLOS      | 2021-06-24 |
+| GRACE       | 2022-02-28 |
+| MIA         | 2022-05-16 |
+| SAM         | 2022-07-14 |
+| YARA        | 2022-09-08 |
++-------------+------------+
+30 rows in set (0.000 sec)
+
+mysql> -- Q30. Find the number of employees who joined each year, sorted by year.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> select count(*),year(joindate) from employees order by year(joindate);
+ERROR 1140 (42000): In aggregated query without GROUP BY, expression #2 of SELECT list contains nonaggregated column 'regex.employees.JoinDate'; this is incompatible with sql_mode=only_full_group_by
+mysql> select count(*),year(joindate) from employees group by year order by year(joindate);
+ERROR 1054 (42S22): Unknown column 'year' in 'group statement'
+mysql> select count(*),year(joindate) from employees group by year(joindate) order by year(joindate);
++----------+----------------+
+| count(*) | year(joindate) |
++----------+----------------+
+|        1 |           2015 |
+|        2 |           2016 |
+|        3 |           2017 |
+|        5 |           2018 |
+|        5 |           2019 |
+|        5 |           2020 |
+|        5 |           2021 |
+|        4 |           2022 |
++----------+----------------+
+8 rows in set (0.000 sec)
