@@ -481,3 +481,393 @@ mysql> select max(salary),state,dept from emp group by state,dept;
 +-------------+-------+-----------+
 16 rows in set (0.000 sec)
 
+mysql> -- Q26. Find total salary grouped by city AND gender.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> select sum(salary),city,gender from emp group by city,gender;
++-------------+----------+--------+
+| sum(salary) | city     | gender |
++-------------+----------+--------+
+|      631000 | New York | F      |
+|      485000 | Chicago  | M      |
+|      371000 | Houston  | F      |
+|      228000 | New York | M      |
+|      326000 | Chicago  | F      |
+|      304000 | Houston  | M      |
+|      327000 | Dallas   | F      |
+|      210000 | Dallas   | M      |
+|      177000 | Phoenix  | F      |
+|      456000 | Phoenix  | M      |
++-------------+----------+--------+
+10 rows in set (0.000 sec)
+
+mysql> -- Q27. Count employees per department, city, and show groups with more than 2 employees (HAVING).
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> select count(name),dept,city from emp group by dept,city having count(name) > 2;
++-------------+-----------+----------+
+| count(name) | dept      | city     |
++-------------+-----------+----------+
+|           3 | IT        | Chicago  |
+|           4 | Finance   | New York |
+|           3 | HR        | Chicago  |
+|           4 | IT        | Houston  |
+|           4 | Finance   | Chicago  |
+|           3 | IT        | New York |
+|           3 | Marketing | New York |
+|           3 | HR        | Houston  |
+|           3 | Finance   | Dallas   |
+|           3 | IT        | Phoenix  |
+|           3 | HR        | Phoenix  |
+|           3 | Marketing | Dallas   |
++-------------+-----------+----------+
+12 rows in set (0.000 sec)
+
+mysql> -- Q28. Find average salary grouped by region AND gender, ordered by region and avg salary descending.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> select avg(salary),region,gender from emp group by region,gender order by region,avg(salary) desc;
++-------------+---------+--------+
+| avg(salary) | region  | gender |
++-------------+---------+--------+
+|  76000.0000 | East    | M      |
+|  70111.1111 | East    | F      |
+|  69285.7143 | Midwest | M      |
+|  65200.0000 | Midwest | F      |
+|  73428.5714 | South   | M      |
+|  69800.0000 | South   | F      |
+|  76000.0000 | West    | M      |
+|  59000.0000 | West    | F      |
++-------------+---------+--------+
+8 rows in set (0.000 sec)
+
+mysql> -- Q29. Count employees grouped by state AND role, show only combinations with more than 1 employee.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> select count(name),state,role from emp group by state,role having count(name)>1;
++-------------+-------+------------+
+| count(name) | state | role       |
++-------------+-------+------------+
+|           2 | NY    | Manager    |
+|           3 | NY    | Analyst    |
+|           5 | IL    | Executive  |
+|           3 | TX    | Senior Dev |
+|           2 | TX    | Lead       |
+|           6 | TX    | Manager    |
+|           2 | NY    | Developer  |
+|           3 | IL    | Senior Dev |
+|           3 | TX    | Executive  |
+|           3 | NY    | Lead       |
+|           2 | TX    | Analyst    |
+|           3 | AZ    | Manager    |
+|           3 | AZ    | Analyst    |
++-------------+-------+------------+
+13 rows in set (0.000 sec)
+
+mysql> -- Q30. Count how many employees joined in each year.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> select year(joindate),count(*) from emp group by year(joindate) order by year(joindate);
++----------------+----------+
+| year(joindate) | count(*) |
++----------------+----------+
+|           2014 |        1 |
+|           2015 |        2 |
+|           2016 |        4 |
+|           2017 |        5 |
+|           2018 |        7 |
+|           2019 |        9 |
+|           2020 |        8 |
+|           2021 |        7 |
+|           2022 |        7 |
++----------------+----------+
+9 rows in set (0.000 sec)
+
+mysql> -- Q31. Find average salary of employees grouped by the year they joined.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> select avg(salary),year(joindate) from emp group by year(joindate);
++-------------+----------------+
+| avg(salary) | year(joindate) |
++-------------+----------------+
+|  71111.1111 |           2019 |
+|  66625.0000 |           2020 |
+|  74142.8571 |           2018 |
+|  61714.2857 |           2021 |
+|  73200.0000 |           2017 |
+|  56714.2857 |           2022 |
+|  86000.0000 |           2016 |
+|  93500.0000 |           2015 |
+|  97000.0000 |           2014 |
++-------------+----------------+
+9 rows in set (0.000 sec)
+
+mysql> -- Q32. Count how many employees joined in each month (across all years).
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> select count(name),month(joindate) from emp group by count(name);
+ERROR 1056 (42000): Can't group on 'count(name)'
+mysql> select count(name),month(joindate) from emp group by month(joindate);
++-------------+-----------------+
+| count(name) | month(joindate) |
++-------------+-----------------+
+|           5 |               3 |
+|           5 |               7 |
+|           5 |              11 |
+|           3 |               1 |
+|           4 |               6 |
+|           5 |               9 |
+|           4 |               2 |
+|           4 |               4 |
+|           4 |              12 |
+|           4 |               8 |
+|           3 |               5 |
+|           4 |              10 |
++-------------+-----------------+
+12 rows in set (0.000 sec)
+
+mysql> -- Q33. Find total salary grouped by quarter of the join date.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> -- Q35. Show the year and department with headcount, ordered by year and dept.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> select year(joindate),dept,count(*) from emp group by year(joindate),dept order by year(joindate),dept;
++----------------+-----------+----------+
+| year(joindate) | dept      | count(*) |
++----------------+-----------+----------+
+|           2014 | IT        |        1 |
+|           2015 | IT        |        2 |
+|           2016 | HR        |        1 |
+|           2016 | IT        |        3 |
+|           2017 | Finance   |        1 |
+|           2017 | HR        |        1 |
+|           2017 | IT        |        2 |
+|           2017 | Marketing |        1 |
+|           2018 | Finance   |        3 |
+|           2018 | IT        |        3 |
+|           2018 | Marketing |        1 |
+|           2019 | Finance   |        5 |
+|           2019 | HR        |        1 |
+|           2019 | IT        |        2 |
+|           2019 | Marketing |        1 |
+|           2020 | Finance   |        2 |
+|           2020 | HR        |        2 |
+|           2020 | IT        |        1 |
+|           2020 | Marketing |        3 |
+|           2021 | Finance   |        2 |
+|           2021 | HR        |        3 |
+|           2021 | Marketing |        2 |
+|           2022 | HR        |        4 |
+|           2022 | Marketing |        3 |
++----------------+-----------+----------+
+24 rows in set (0.000 sec)
+
+mysql> -- Q36. Show years where more than 6 employees joined.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> select year(joindate),count(name) from emp group by count(name) having count(name) > 6;
+ERROR 1056 (42000): Can't group on 'count(name)'
+mysql> select year(joindate),count(name) from emp group by year(joindate) having count(name) > 6;
++----------------+-------------+
+| year(joindate) | count(name) |
++----------------+-------------+
+|           2019 |           9 |
+|           2020 |           8 |
+|           2018 |           7 |
+|           2021 |           7 |
+|           2022 |           7 |
++----------------+-------------+
+5 rows in set (0.000 sec)
+
+mysql> -- Q37. Find the average salary for employees joining in each quarter, show only quarters with avg salary above 70000.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> -- Q38. Find the number of employees and average salary per state.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> select count(name),avg(salary),state from emp group by state;
++-------------+-------------+-------+
+| count(name) | avg(salary) | state |
++-------------+-------------+-------+
+|          12 |  71583.3333 | NY    |
+|          12 |  67583.3333 | IL    |
+|          17 |  71294.1176 | TX    |
+|           9 |  70333.3333 | AZ    |
++-------------+-------------+-------+
+4 rows in set (0.000 sec)
+
+mysql> -- Q39. Find the department with highest headcount in each state.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> -- Q40. Show cities with more than 2 departments represented.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> select city,count(dept) from emp group by city having count(dept) > 2 ;
++----------+-------------+
+| city     | count(dept) |
++----------+-------------+
+| New York |          12 |
+| Chicago  |          12 |
+| Houston  |           9 |
+| Dallas   |           8 |
+| Phoenix  |           9 |
++----------+-------------+
+5 rows in set (0.000 sec)
+
+mysql> select city,count(distinct dept) from emp group by city having count(distinct dept) > 2 ;
++----------+----------------------+
+| city     | count(distinct dept) |
++----------+----------------------+
+| Chicago  |                    4 |
+| Dallas   |                    4 |
+| Houston  |                    4 |
+| New York |                    4 |
+| Phoenix  |                    4 |
++----------+----------------------+
+5 rows in set (0.000 sec)
+
+mysql> -- Q41. Find the total salary bill per region AND state.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> select sum(salary),state,region from emp group by region,state order by region,state;
++-------------+-------+---------+
+| sum(salary) | state | region  |
++-------------+-------+---------+
+|      859000 | NY    | East    |
+|      811000 | IL    | Midwest |
+|     1212000 | TX    | South   |
+|      633000 | AZ    | West    |
++-------------+-------+---------+
+4 rows in set (0.000 sec)
+
+mysql> -- Q42. Show regions with more than 10 employees AND average salary above 67000.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> select region,count(name),avg(salary) from emp group by region having count(name) > 10 and avg(salary)>67000;
++---------+-------------+-------------+
+| region  | count(name) | avg(salary) |
++---------+-------------+-------------+
+| East    |          12 |  71583.3333 |
+| Midwest |          12 |  67583.3333 |
+| South   |          17 |  71294.1176 |
++---------+-------------+-------------+
+3 rows in set (0.000 sec)
+
+mysql> -- Q43. Count distinct roles available in each city.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> select count(distinct role),city from emp group by city;
++----------------------+----------+
+| count(distinct role) | city     |
++----------------------+----------+
+|                    6 | Chicago  |
+|                    4 | Dallas   |
+|                    4 | Houston  |
+|                    6 | New York |
+|                    5 | Phoenix  |
++----------------------+----------+
+5 rows in set (0.000 sec)
+
+mysql> -- Q44. Count employees per department, but only consider female employees.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> select count(name),dept from emp where gender = 'F' group by dept;
++-------------+-----------+
+| count(name) | dept      |
++-------------+-----------+
+|           9 | HR        |
+|           5 | Finance   |
+|           4 | IT        |
+|           9 | Marketing |
++-------------+-----------+
+4 rows in set (0.000 sec)
+
+mysql> -- Q45. Find average salary per department for employees who joined after 2019-01-01.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> select avg(salary),dept from emp where joindate > '2019-01-01' group by dept;
++-------------+-----------+
+| avg(salary) | dept      |
++-------------+-----------+
+|  55100.0000 | HR        |
+|  74666.6667 | IT        |
+|  72222.2222 | Finance   |
+|  64111.1111 | Marketing |
++-------------+-----------+
+4 rows in set (0.000 sec)
+
+mysql> -- Q46. Find total salary per city for employees in the IT department only.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> select sum(salary),city from emp where dept = 'IT' group by city;
++-------------+----------+
+| sum(salary) | city     |
++-------------+----------+
+|      234000 | Chicago  |
+|      350000 | Houston  |
+|      251000 | New York |
+|      272000 | Phoenix  |
+|       74000 | Dallas   |
++-------------+----------+
+5 rows in set (0.000 sec)
+
+mysql> -- Q47. Count employees per role for those with salary above 70000.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> select count(name),role from emp where salary > 70000 group by role;
++-------------+------------+
+| count(name) | role       |
++-------------+------------+
+|           4 | Developer  |
+|           6 | Senior Dev |
+|           4 | Manager    |
+|           7 | Lead       |
+|           2 | Architect  |
++-------------+------------+
+5 rows in set (0.000 sec)
+
+mysql> -- Q48. Show the max salary per department, only for employees in the South or West region.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> select max(salary),dept from emp where region in ('south','west') group by dept;
++-------------+-----------+
+| max(salary) | dept      |
++-------------+-----------+
+|       95000 | IT        |
+|       68000 | Marketing |
+|       73000 | Finance   |
+|       79000 | HR        |
++-------------+-----------+
+4 rows in set (0.001 sec)
+
+mysql> -- Q49. Count employees per year of joining for Texas (TX) state only.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> select count(name),year(joindate) from emp  where state = 'TX' group by year(joindate);
++-------------+----------------+
+| count(name) | year(joindate) |
++-------------+----------------+
+|           2 |           2017 |
+|           4 |           2016 |
+|           2 |           2018 |
+|           3 |           2021 |
+|           1 |           2020 |
+|           4 |           2019 |
+|           1 |           2022 |
++-------------+----------------+
+7 rows in set (0.000 sec)
+
+mysql> -- Q50. Find departments where more than 3 female employees have salaries above 60000.
+Query OK, 0 rows affected (0.000 sec)
+
+mysql> select dept,count(*) from emp where gender = 'F' AND  salary > 60000 GROUP BY DEPT HAVING COUNT(*) > 3 ;
++-----------+----------+
+| dept      | count(*) |
++-----------+----------+
+| Finance   |        5 |
+| IT        |        4 |
+| Marketing |        8 |
++-----------+----------+
+3 rows in set (0.000 sec)
+
