@@ -91,8 +91,11 @@ WHERE e.emp_id IS NULL;
 SELECT e.emp_name, e.salary, d.dept_name FROM employees e CROSS JOIN departments d WHERE d.dept_name IN ('Finance', 'Legal')
 AND e.salary > 70000;
 -- Q11 ---------------- 
-SELECT e.emp_name, e.salary, d.dept_name FROM employees e CROSS JOIN departments d WHERE d.dept_name IN ('Finance', 'Legal')
-  AND e.salary > 70000;
+SELECT p.proj_name, p.budget, d.dept_name, d.location
+FROM projects p
+CROSS JOIN departments d
+WHERE p.budget >= 400000
+  AND d.location IN ('Mumbai', 'Pune');
 -- Q12--------------
 SELECT COUNT(*) AS total_combinations FROM employees
 CROSS JOIN departments;
