@@ -124,3 +124,5 @@ WHERE budget BETWEEN 200000 AND 400000;
 -- Q20--------------
 SELECT proj_id, proj_name, dept_id, budget FROM projects
 WHERE dept_id = 20;
+
+------------------------------------------------------------
