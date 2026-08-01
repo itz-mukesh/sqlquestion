@@ -1,0 +1,390 @@
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| bank_db            |
+| collage            |
+| demo_1             |
+| demo_2             |
+| demo_3             |
+| demo_4             |
+| demo_5             |
+| HELLO_DB           |
+| information_schema |
+| joinsdb            |
+| joinsdbs           |
+| joinssdb           |
+| moviesdb           |
+| mysql              |
+| performance_schema |
+| regex              |
+| selfjoin           |
+| SSC                |
+| store              |
+| STORE_DB           |
+| world              |
+| ydb                |
++--------------------+
+22 rows in set (0.03 sec)
+
+mysql> drop demo_1;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'demo_1' at line 1
+mysql> drop database demo_1;
+Query OK, 2 rows affected (0.04 sec)
+
+mysql> drop database demo_2;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> drop database demo_3;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> drop database demo_4;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> drop database demo_5;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> use regex
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql> show tables;
++-----------------+
+| Tables_in_regex |
++-----------------+
+| emp             |
+| employee_d      |
+| Employees       |
++-----------------+
+3 rows in set (0.00 sec)
+
+mysql> create database subquery;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> use subquery;
+Database changed
+mysql> -- Create Table
+mysql> CREATE TABLE Employees (
+    -> EMP_ID INT PRIMARY KEY,
+    -> NAME VARCHAR(50),
+    -> DEPARTMENT VARCHAR(50),
+    -> SALARY INT,
+    -> MANAGER_ID INT );
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> -- Insert Data
+mysql> INSERT INTO Employees (EMP_ID, NAME, DEPARTMENT, SALARY, MANAGER_ID) VALUES
+    -> (101, 'Alice', 'HR', 50000, NULL),
+    -> (102, 'Bob', 'IT', 80000, 101),
+    -> (103, 'Charlie', 'IT', 75000, 101),
+    -> (104, 'Diana', 'Finance', 90000, NULL),
+    -> (105, 'Eve', 'HR', 48000, 101),
+    -> (106, 'Frank', 'Finance', 95000, 104),
+mysql> -- Story: Riya is the HR manager of a company. She wants to find all employees who earn MORE than the average salary of the company. -- She does not know the average salary in advance. So she first has to calculate the average, then use it to fin
+d the employees.
+mysql> select avg(salary) from employees;
++-------------+
+| avg(salary) |
++-------------+
+|  74285.7143 |
++-------------+
+1 row in set (0.01 sec)
+
+mysql> select name,salary from employees where salary > (select avg(salary) from employees);
++---------+--------+
+| name    | salary |
++---------+--------+
+| Bob     |  80000 |
+| Charlie |  75000 |
+| Diana   |  90000 |
+| Frank   |  95000 |
+| Grace   |  82000 |
++---------+--------+
+5 rows in set (0.00 sec)
+
+mysql> -- find employees more the salarey
+mysql> select max(salary) from employees;
++-------------+
+| max(salary) |
++-------------+
+|       95000 |
++-------------+
+1 row in set (0.00 sec)
+
+mysql> select name ,salary from employees where salary > (select max(salary) from employees);
+Empty set (0.00 sec)
+
+mysql> select name ,salary from employees where salary > (select max(salary) from employees);
+Empty set (0.00 sec)
+
+mysql> -- We want to find employees whose department is in the list of departments that have average salary above 7000;
+mysql> select department from employees 
+    -> group by department
+    -> having avg(salary) > 7000;
++------------+
+| department |
++------------+
+| HR         |
+| IT         |
+| Finance    |
++------------+
+3 rows in set (0.01 sec)
+
+mysql> SELECT NAME, DEPARTMENT
+    -> FROM EMPLOYEES
+    -> WHERE DEPARTMENT IN (SELECT DEPARTMENT FROM EMPLOYEES
+    -> GROUP BY DEPARTMENT
+    -> HAVING AVG(SALARY) > 70000);
++---------+------------+
+| NAME    | DEPARTMENT |
++---------+------------+
+| Bob     | IT         |
+| Charlie | IT         |
+| Diana   | Finance    |
+| Frank   | Finance    |
+| Grace   | IT         |
++---------+------------+
+5 rows in set (0.01 sec)
+
+mysql> select salary from employees
+    -> where department = 'hr';
++--------+
+| salary |
++--------+
+|  50000 |
+|  48000 |
++--------+
+2 rows in set (0.00 sec)
+
+mysql> select name, salary from employees
+    -> where salary > any
+    -> (
+    -> select salary from employees
+    -> where department = 'hr');
++---------+--------+
+| name    | salary |
++---------+--------+
+| Alice   |  50000 |
+| Bob     |  80000 |
+| Charlie |  75000 |
+| Diana   |  90000 |
+| Frank   |  95000 |
+| Grace   |  82000 |
++---------+--------+
+6 rows in set (0.00 sec)
+
+mysql> -- Find employees who earn more than ALL Finance employees
+mysql> 
+mysql> select name , department from employees where salary > ALL(select salary form employees where department = 'Finance');
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'employees where department = 'Finance')' at line 1
+mysql> select name ,salary from employees where salary > ALL(select salary form employees where department = 'Finance');
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'employees where department = 'Finance')' at line 1
+mysql> SELECT NAME, SALARY
+    -> FROM EMPLOYEES
+    -> WHERE SALARY > ALL (SELECT SALARY FROM EMPLOYEES WHERE DEPARTMENT =
+    -> 'Finance');
+Empty set (0.00 sec)
+
+mysql> -- Find employees who work in departments located in Bangalore or Delhi.
+mysql> CREATE TABLE DEPARTMENTS (
+    -> DEPT_ID INT NOT NULL AUTO_INCREMENT,
+    -> DEPT_NAME VARCHAR(50) NOT NULL,
+    -> LOCATION VARCHAR(100) NOT NULL,
+    -> PRIMARY KEY (DEPT_ID)
+    -> );
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> INSERT INTO DEPARTMENTS (DEPT_NAME, LOCATION) VALUES
+    -> ('HR', 'Mumbai'),
+    -> ('IT', 'Bangalore'),
+    -> ('Finance', 'Delhi');
+Query OK, 3 rows affected (0.00 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> SELECT NAME, DEPARTMENT
+    -> FROM EMPLOYEES
+    -> WHERE DEPARTMENT IN (SELECT DEPT_NAME FROM DEPARTMENTS
+    -> WHERE LOCATION IN ('Bangalore', 'Delhi'));
++---------+------------+
+| NAME    | DEPARTMENT |
++---------+------------+
+| Bob     | IT         |
+| Charlie | IT         |
+| Diana   | Finance    |
+| Frank   | Finance    |
+| Grace   | IT         |
++---------+------------+
+5 rows in set (0.01 sec)
+
+mysql> -- Find employees who are managers (i.e., their EMP_ID appears in the MANAGER_ID column).
+mysql> select distinct manager_id from employees where manager_id is not null;
++------------+
+| manager_id |
++------------+
+|        101 |
+|        104 |
++------------+
+2 rows in set (0.00 sec)
+
+mysql> select name from employees 
+    -> where emp_id IN ( select distinct manager_id from employees
+    -> where manager_id is not null );
++-------+
+| name  |
++-------+
+| Alice |
+| Diana |
++-------+
+2 rows in set (0.00 sec)
+
+mysql> -- second heighest salary;
+mysql> select max(salary) as second from employees 
+    -> where second < (select max(salary) from employees);
+ERROR 1054 (42S22): Unknown column 'second' in 'where clause'
+mysql> select max(salary) as second from employees  where max(salary) < (select max(salary) from employees);
+ERROR 1111 (HY000): Invalid use of group function
+mysql> select max(salary) as second from employees  where salary < (select max(salary) from employees);
++--------+
+| second |
++--------+
+|  90000 |
++--------+
+1 row in set (0.00 sec)
+
+mysql> -- Find departments where all employees earn above 70000;
+mysql> select distinct department from employees 
+    -> e1 where 70000 < all (select salary from employees e2
+    -> where e2.department = e1.department);
++------------+
+| department |
++------------+
+| IT         |
+| Finance    |
++------------+
+2 rows in set (0.00 sec)
+
+mysql> --  Find all employees who earn more than the average salary of the company.;
+mysql> select avg(salary) from employees;
++-------------+
+| avg(salary) |
++-------------+
+|  74285.7143 |
++-------------+
+1 row in set (0.00 sec)
+
+mysql> select name from employees where salary > (select avg(salary) from employees);
++---------+
+| name    |
++---------+
+| Bob     |
+| Charlie |
+| Diana   |
+| Frank   |
+| Grace   |
++---------+
+5 rows in set (0.00 sec)
+
+mysql> SELECT NAME, DEPARTMENT
+    -> FROM EMPLOYEES
+    -> WHERE DEPARTMENT = (SELECT DEPARTMENT FROM EMPLOYEES WHERE NAME = 'Bob');
++---------+------------+
+| NAME    | DEPARTMENT |
++---------+------------+
+| Bob     | IT         |
+| Charlie | IT         |
+| Grace   | IT         |
++---------+------------+
+3 rows in set (0.01 sec)
+
+mysql> SELECT NAME, DEPARTMENT FROM EMPLOYEES WHERE DEPARTMENT = (SELECT DEPARTMENT FROM EMPLOYEES WHERE NAME = 'Bob') AND NAME <> 'Bob';
++---------+------------+
+| NAME    | DEPARTMENT |
++---------+------------+
+| Charlie | IT         |
+| Grace   | IT         |
++---------+------------+
+2 rows in set (0.00 sec)
+
+mysql> -- Question 1: Find all employees who earn more than the average salary of the company ;
+mysql> SELECT NAME, SALARY
+    -> FROM EMPLOYEES
+    -> WHERE SALARY > (SELECT AVG(SALARY) FROM EMPLOYEES);
++---------+--------+
+| NAME    | SALARY |
++---------+--------+
+| Bob     |  80000 |
+| Charlie |  75000 |
+| Diana   |  90000 |
+| Frank   |  95000 |
+| Grace   |  82000 |
++---------+--------+
+5 rows in set (0.00 sec)
+
+mysql> -- Question 2: Find employees from the same department as 'Bob' ;
+mysql> SELECT NAME, DEPARTMENT
+    -> FROM EMPLOYEES
+    -> WHERE DEPARTMENT = (SELECT DEPARTMENT FROM EMPLOYEES WHERE NAME = 'Bob')
+    -> AND NAME <> 'Bob';
++---------+------------+
+| NAME    | DEPARTMENT |
++---------+------------+
+| Charlie | IT         |
+| Grace   | IT         |
++---------+------------+
+2 rows in set (0.00 sec)
+
+mysql> -- Question 3: Find employees whose salary is equal to any employee's salary in the HR department ;
+mysql> SELECT NAME, SALARY
+    -> FROM EMPLOYEES
+    -> WHERE SALARY IN (SELECT SALARY FROM EMPLOYEES WHERE DEPARTMENT = 'HR');
++-------+--------+
+| NAME  | SALARY |
++-------+--------+
+| Alice |  50000 |
+| Eve   |  48000 |
++-------+--------+
+2 rows in set (0.00 sec)
+
+mysql> -- Question 4: Find employees who earn more than their own department's average salary.;
+mysql> select e1.name,e1.department,e1.salary from employees e1 
+    -> where e1.salary > (select avg(e2.salary) from employees e2 
+    -> where e2.department = e1.department);
++-------+------------+--------+
+| name  | department | salary |
++-------+------------+--------+
+| Alice | HR         |  50000 |
+| Bob   | IT         |  80000 |
+| Frank | Finance    |  95000 |
+| Grace | IT         |  82000 |
++-------+------------+--------+
+4 rows in set (0.00 sec)
+
+mysql> -- Question 5: Find the employee(s) with the minimum salary in each department.;
+mysql> SELECT e1.NAME, e1.DEPARTMENT, e1.SALARY
+    -> FROM EMPLOYEES e1
+    -> WHERE e1.SALARY = (SELECT MIN(e2.SALARY)
+    -> FROM EMPLOYEES e2
+    -> WHERE e2.DEPARTMENT = e1.DEPARTMENT);
++---------+------------+--------+
+| NAME    | DEPARTMENT | SALARY |
++---------+------------+--------+
+| Charlie | IT         |  75000 |
+| Diana   | Finance    |  90000 |
+| Eve     | HR         |  48000 |
++---------+------------+--------+
+3 rows in set (0.00 sec)
+
+mysql> -- Question: Find all departments that have at least one employee earning more than 80000.;
+mysql> SELECT DEPT_NAME
+    -> FROM DEPARTMENTS d
+    -> WHERE EXISTS (SELECT 1
+    -> FROM EMPLOYEES e WHERE e.DEPARTMENT = d.DEPT_NAME
+    -> AND e.SALARY > 80000);
++-----------+
+| DEPT_NAME |
++-----------+
+| IT        |
+| Finance   |
++-----------+
+2 rows in set (0.00 sec)
