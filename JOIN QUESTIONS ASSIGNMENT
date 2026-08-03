@@ -642,6 +642,321 @@ mysql>
 
 
 
+mysql> -- Create and use the Gokuldham Society database
+mysql> CREATE DATABASE gokuldham_society;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> USE gokuldham_society;
+Database changed
+mysql> 
+mysql> -- Create apartments table to store apartment information
+mysql> CREATE TABLE apartments (
+    ->     apartment_id INT PRIMARY KEY,
+    ->     apartment_number VARCHAR(10) NOT NULL,
+    ->     floor_number INT NOT NULL,
+    ->     wing_name CHAR(1) NOT NULL
+    -> );
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> 
+mysql> -- Create residents table with foreign key to apartments
+mysql> CREATE TABLE residents (
+    ->     resident_id INT PRIMARY KEY,
+    ->     first_name VARCHAR(50) NOT NULL,
+    ->     last_name VARCHAR(50) NOT NULL,
+    ->     occupation VARCHAR(100),
+    ->     apartment_id INT,
+    ->     FOREIGN KEY (apartment_id) REFERENCES apartments(apartment_id)
+    -> );
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> 
+mysql> -- Insert sample apartment data
+mysql> INSERT INTO apartments (apartment_id, apartment_number, floor_number, wing_name) VALUES
+    -> (1, '101', 1, 'A'),
+    -> (2, '102', 1, 'A'),
+    -> (3, '201', 2, 'A'),
+    -> (4, '202', 2, 'A'),
+    -> (5, '301', 3, 'A'),
+    -> (6, '302', 3, 'A'),
+    -> (7, '401', 4, 'A'),
+    -> (8, '402', 4, 'A'),
+    -> (9, '501', 5, 'B'),
+    -> (10, '502', 5, 'B');
+Query OK, 10 rows affected (0.00 sec)
+Records: 10  Duplicates: 0  Warnings: 0
+
+mysql> 
+mysql> -- Insert sample resident data
+mysql> INSERT INTO residents (resident_id, first_name, last_name, occupation, apartment_id) VALUES
+    -> (1, 'Jethalal', 'Gada', 'Electronics Shop Owner', 1),
+    -> (2, 'Daya', 'Gada', 'Housewife', 1),
+    -> (3, 'Taarak', 'Mehta', 'Writer', 2),
+    -> (4, 'Anjali', 'Mehta', 'Teacher', 2),
+    -> (5, 'Popatlal', 'Pandey', 'Reporter', 3),
+    -> (6, 'Bhide', 'Aatmaram', 'School Teacher', 4),
+    -> (7, 'Madhavi', 'Bhide', 'Housewife', 4),
+    -> (8, 'Dr', 'Hathi', 'Doctor', 5),
+    -> (9, 'Komal', 'Hathi', 'Housewife', 5);
+Query OK, 9 rows affected (0.00 sec)
+Records: 9  Duplicates: 0  Warnings: 0
+
+mysql> -- Note: We've left some apartments without residents
+mysql> 
+mysql> -- Basic SELECT query to view all residents
+mysql> SELECT * FROM residents;
++-------------+------------+-----------+------------------------+--------------+
+| resident_id | first_name | last_name | occupation             | apartment_id |
++-------------+------------+-----------+------------------------+--------------+
+|           1 | Jethalal   | Gada      | Electronics Shop Owner |            1 |
+|           2 | Daya       | Gada      | Housewife              |            1 |
+|           3 | Taarak     | Mehta     | Writer                 |            2 |
+|           4 | Anjali     | Mehta     | Teacher                |            2 |
+|           5 | Popatlal   | Pandey    | Reporter               |            3 |
+|           6 | Bhide      | Aatmaram  | School Teacher         |            4 |
+|           7 | Madhavi    | Bhide     | Housewife              |            4 |
+|           8 | Dr         | Hathi     | Doctor                 |            5 |
+|           9 | Komal      | Hathi     | Housewife              |            5 |
++-------------+------------+-----------+------------------------+--------------+
+9 rows in set (0.00 sec)
+
+mysql> select * from apartments;
++--------------+------------------+--------------+-----------+
+| apartment_id | apartment_number | floor_number | wing_name |
++--------------+------------------+--------------+-----------+
+|            1 | 101              |            1 | A         |
+|            2 | 102              |            1 | A         |
+|            3 | 201              |            2 | A         |
+|            4 | 202              |            2 | A         |
+|            5 | 301              |            3 | A         |
+|            6 | 302              |            3 | A         |
+|            7 | 401              |            4 | A         |
+|            8 | 402              |            4 | A         |
+|            9 | 501              |            5 | B         |
+|           10 | 502              |            5 | B         |
++--------------+------------------+--------------+-----------+
+10 rows in set (0.00 sec)
+
+mysql> -- DEMO: LEFT JOIN to see all apartments and their residents (if any)
+mysql> SELECT a.apartment_number, a.floor_number, a.wing_name, 
+    ->        r.first_name, r.last_name
+    -> FROM apartments a
+    -> LEFT JOIN residents r
+    -> ON r.apartment_id = a.apartment_id;
++------------------+--------------+-----------+------------+-----------+
+| apartment_number | floor_number | wing_name | first_name | last_name |
++------------------+--------------+-----------+------------+-----------+
+| 101              |            1 | A         | Jethalal   | Gada      |
+| 101              |            1 | A         | Daya       | Gada      |
+| 102              |            1 | A         | Taarak     | Mehta     |
+| 102              |            1 | A         | Anjali     | Mehta     |
+| 201              |            2 | A         | Popatlal   | Pandey    |
+| 202              |            2 | A         | Bhide      | Aatmaram  |
+| 202              |            2 | A         | Madhavi    | Bhide     |
+| 301              |            3 | A         | Dr         | Hathi     |
+| 301              |            3 | A         | Komal      | Hathi     |
+| 302              |            3 | A         | NULL       | NULL      |
+| 401              |            4 | A         | NULL       | NULL      |
+| 402              |            4 | A         | NULL       | NULL      |
+| 501              |            5 | B         | NULL       | NULL      |
+| 502              |            5 | B         | NULL       | NULL      |
++------------------+--------------+-----------+------------+-----------+
+14 rows in set (0.00 sec)
+
+mysql> 
+mysql> -- DEMO: RIGHT JOIN to see all apartments and their residents (if any)
+mysql> SELECT a.apartment_number, a.floor_number, a.wing_name, 
+    ->        r.first_name, r.last_name
+    -> FROM residents r 
+    -> RIGHT JOIN apartments a
+    -> ON r.apartment_id = a.apartment_id;
++------------------+--------------+-----------+------------+-----------+
+| apartment_number | floor_number | wing_name | first_name | last_name |
++------------------+--------------+-----------+------------+-----------+
+| 101              |            1 | A         | Jethalal   | Gada      |
+| 101              |            1 | A         | Daya       | Gada      |
+| 102              |            1 | A         | Taarak     | Mehta     |
+| 102              |            1 | A         | Anjali     | Mehta     |
+| 201              |            2 | A         | Popatlal   | Pandey    |
+| 202              |            2 | A         | Bhide      | Aatmaram  |
+| 202              |            2 | A         | Madhavi    | Bhide     |
+| 301              |            3 | A         | Dr         | Hathi     |
+| 301              |            3 | A         | Komal      | Hathi     |
+| 302              |            3 | A         | NULL       | NULL      |
+| 401              |            4 | A         | NULL       | NULL      |
+| 402              |            4 | A         | NULL       | NULL      |
+| 501              |            5 | B         | NULL       | NULL      |
+| 502              |            5 | B         | NULL       | NULL      |
++------------------+--------------+-----------+------------+-----------+
+14 rows in set (0.00 sec)
+
+mysql> -- Create maintenance_requests table with foreign key to apartments
+mysql> CREATE TABLE maintenance_requests (
+    ->     request_id INT PRIMARY KEY,
+    ->     apartment_id INT,
+    ->     request_date DATE NOT NULL,
+    ->     description TEXT NOT NULL,
+    ->     status ENUM('Pending', 'In Progress', 'Completed') DEFAULT 'Pending',
+    ->     FOREIGN KEY (apartment_id) REFERENCES apartments(apartment_id)
+    -> );
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> 
+mysql> -- Insert sample maintenance request data
+mysql> INSERT INTO maintenance_requests (request_id, apartment_id, request_date, description, status) VALUES
+    -> (1, 1, '2023-01-15', 'Leaky faucet in kitchen', 'Completed'),
+    -> (2, 1, '2023-02-20', 'Broken window handle', 'Completed'),
+    -> (3, 2, '2023-03-10', 'Electricity fluctuation', 'In Progress'),
+    -> (4, 4, '2023-03-15', 'Ceiling fan not working', 'Pending'),
+    -> (5, 5, '2023-04-01', 'Bathroom door lock broken', 'Completed'),
+    -> (6, 8, '2023-04-10', 'Water seepage in wall', 'In Progress');
+Query OK, 6 rows affected (0.01 sec)
+Records: 6  Duplicates: 0  Warnings: 0
+
+mysql> select * from maintenance_request
+    -> ;
+ERROR 1146 (42S02): Table 'gokuldham_society.maintenance_request' doesn't exist
+mysql> select * from maintenance_requests;
++------------+--------------+--------------+---------------------------+-------------+
+| request_id | apartment_id | request_date | description               | status      |
++------------+--------------+--------------+---------------------------+-------------+
+|          1 |            1 | 2023-01-15   | Leaky faucet in kitchen   | Completed   |
+|          2 |            1 | 2023-02-20   | Broken window handle      | Completed   |
+|          3 |            2 | 2023-03-10   | Electricity fluctuation   | In Progress |
+|          4 |            4 | 2023-03-15   | Ceiling fan not working   | Pending     |
+|          5 |            5 | 2023-04-01   | Bathroom door lock broken | Completed   |
+|          6 |            8 | 2023-04-10   | Water seepage in wall     | In Progress |
++------------+--------------+--------------+---------------------------+-------------+
+6 rows in set (0.00 sec)
+
+mysql> -- EXERCISE 1: Finding Unoccupied Apartments;
+mysql> SELECT a.apartment_id, a.apartment_number, a.floor_number, a.wing_name
+    -> FROM apartments a
+    -> LEFT JOIN residents r ON a.apartment_id = r.apartment_id
+    -> WHERE r.resident_id IS NULL;
++--------------+------------------+--------------+-----------+
+| apartment_id | apartment_number | floor_number | wing_name |
++--------------+------------------+--------------+-----------+
+|            6 | 302              |            3 | A         |
+|            7 | 401              |            4 | A         |
+|            8 | 402              |            4 | A         |
+|            9 | 501              |            5 | B         |
+|           10 | 502              |            5 | B         |
++--------------+------------------+--------------+-----------+
+5 rows in set (0.00 sec)
+
+mysql> -- EXERCISE 2: Count the number of residents per apartment
+mysql> SELECT a.apartment_id, a.apartment_number, COUNT(r.resident_id) AS resident_count
+    -> FROM apartments a
+    -> LEFT JOIN residents r ON a.apartment_id = r.apartment_id
+    -> GROUP BY a.apartment_id;
++--------------+------------------+----------------+
+| apartment_id | apartment_number | resident_count |
++--------------+------------------+----------------+
+|            1 | 101              |              2 |
+|            2 | 102              |              2 |
+|            3 | 201              |              1 |
+|            4 | 202              |              2 |
+|            5 | 301              |              2 |
+|            6 | 302              |              0 |
+|            7 | 401              |              0 |
+|            8 | 402              |              0 |
+|            9 | 501              |              0 |
+|           10 | 502              |              0 |
++--------------+------------------+----------------+
+10 rows in set (0.00 sec)
+
+mysql> -- EXERCISE 3: List all apartments with their residents and maintenance request status
+mysql> SELECT 
+    ->     a.apartment_id, 
+    ->     a.apartment_number, 
+    ->     a.floor_number, 
+    ->     a.wing_name,
+    ->     CONCAT(r.first_name, ' ', r.last_name) AS resident_name,
+    ->     mr.status AS maintenance_status
+    -> FROM 
+    ->     apartments a
+    -> LEFT JOIN 
+    ->     residents r ON a.apartment_id = r.apartment_id
+    -> LEFT JOIN 
+    ->     maintenance_requests mr ON a.apartment_id = mr.apartment_id;
++--------------+------------------+--------------+-----------+-----------------+--------------------+
+| apartment_id | apartment_number | floor_number | wing_name | resident_name   | maintenance_status |
++--------------+------------------+--------------+-----------+-----------------+--------------------+
+|            1 | 101              |            1 | A         | Jethalal Gada   | Completed          |
+|            1 | 101              |            1 | A         | Jethalal Gada   | Completed          |
+|            1 | 101              |            1 | A         | Daya Gada       | Completed          |
+|            1 | 101              |            1 | A         | Daya Gada       | Completed          |
+|            2 | 102              |            1 | A         | Taarak Mehta    | In Progress        |
+|            2 | 102              |            1 | A         | Anjali Mehta    | In Progress        |
+|            3 | 201              |            2 | A         | Popatlal Pandey | NULL               |
+|            4 | 202              |            2 | A         | Bhide Aatmaram  | Pending            |
+|            4 | 202              |            2 | A         | Madhavi Bhide   | Pending            |
+|            5 | 301              |            3 | A         | Dr Hathi        | Completed          |
+|            5 | 301              |            3 | A         | Komal Hathi     | Completed          |
+|            6 | 302              |            3 | A         | NULL            | NULL               |
+|            7 | 401              |            4 | A         | NULL            | NULL               |
+|            8 | 402              |            4 | A         | NULL            | In Progress        |
+|            9 | 501              |            5 | B         | NULL            | NULL               |
+|           10 | 502              |            5 | B         | NULL            | NULL               |
++--------------+------------------+--------------+-----------+-----------------+--------------------+
+16 rows in set (0.00 sec)
+
+mysql> 
+mysql> -- EXERCISE 4: Write a query to find the floor with the most unoccupied apartments
+mysql> SELECT 
+    ->     floor_number,
+    ->     wing_name,
+    ->     COUNT(*) AS unoccupied_count
+    -> FROM 
+    ->     apartments a
+    -> LEFT JOIN 
+    ->     residents r ON a.apartment_id = r.apartment_id
+    -> WHERE 
+    ->     r.resident_id IS NULL
+    -> GROUP BY 
+    ->     floor_number, wing_name
+    -> ORDER BY 
+    ->     unoccupied_count DESC
+    -> LIMIT 1;
++--------------+-----------+------------------+
+| floor_number | wing_name | unoccupied_count |
++--------------+-----------+------------------+
+|            5 | B         |                2 |
++--------------+-----------+------------------+
+1 row in set (0.00 sec)
+
+mysql> 
+mysql> -- EXERCISE 5: Write a query to list all apartments along with the total number of maintenance requests
+mysql> SELECT 
+    ->     a.apartment_id, 
+    ->     a.apartment_number, 
+    ->     a.floor_number, 
+    ->     a.wing_name,
+    ->     COUNT(mr.request_id) AS maintenance_request_count
+    -> FROM 
+    ->     apartments a
+    -> LEFT JOIN 
+    ->     maintenance_requests mr ON a.apartment_id = mr.apartment_id
+    -> GROUP BY 
+    ->     a.apartment_id;
++--------------+------------------+--------------+-----------+---------------------------+
+| apartment_id | apartment_number | floor_number | wing_name | maintenance_request_count |
++--------------+------------------+--------------+-----------+---------------------------+
+|            1 | 101              |            1 | A         |                         2 |
+|            2 | 102              |            1 | A         |                         1 |
+|            3 | 201              |            2 | A         |                         0 |
+|            4 | 202              |            2 | A         |                         1 |
+|            5 | 301              |            3 | A         |                         1 |
+|            6 | 302              |            3 | A         |                         0 |
+|            7 | 401              |            4 | A         |                         0 |
+|            8 | 402              |            4 | A         |                         1 |
+|            9 | 501              |            5 | B         |                         0 |
+|           10 | 502              |            5 | B         |                         0 |
++--------------+------------------+--------------+-----------+---------------------------+
+10 rows in set (0.00 sec)
+
+mysql> 
 
 
 
