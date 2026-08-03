@@ -388,3 +388,491 @@ mysql> SELECT DEPT_NAME
 | Finance   |
 +-----------+
 2 rows in set (0.00 sec)
+
+=========================
+
+mysql> show databases ;
++--------------------+
+| Database           |
++--------------------+
+| bank_db            |
+| collage            |
+| HELLO_DB           |
+| information_schema |
+| joinsdb            |
+| joinsdbs           |
+| joinssdb           |
+| left_join_tutorial |
+| moviesdb           |
+| mysql              |
+| newdb              |
+| performance_schema |
+| regex              |
+| selfjoin           |
+| SSC                |
+| store              |
+| STORE_DB           |
+| subquery           |
+| world              |
+| ydb                |
++--------------------+
+20 rows in set (0.01 sec)
+
+mysql> CREATE DATABASE ysq;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> use ysq;
+Database changed
+mysql> -- Create customers table
+mysql> CREATE TABLE customers (
+    ->     customer_id INT PRIMARY KEY AUTO_INCREMENT,
+    ->     first_name VARCHAR(50) NOT NULL,
+    ->     last_name VARCHAR(50) NOT NULL,
+    ->     email VARCHAR(100) UNIQUE NOT NULL,
+    ->     city VARCHAR(50),
+    ->     state VARCHAR(2),
+    ->     signup_date DATE
+    -> );
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> 
+mysql> -- Create products table
+mysql> CREATE TABLE products (
+    ->     product_id INT PRIMARY KEY AUTO_INCREMENT,
+    ->     product_name VARCHAR(100) NOT NULL,
+    ->     category VARCHAR(50) NOT NULL,
+    ->     price DECIMAL(10, 2) NOT NULL,
+    ->     stock_quantity INT NOT NULL
+    -> );
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> 
+mysql> -- Create orders table
+mysql> CREATE TABLE orders (
+    ->     order_id INT PRIMARY KEY AUTO_INCREMENT,
+    ->     customer_id INT NOT NULL,
+    ->     order_date DATETIME NOT NULL,
+    ->     total_amount DECIMAL(10, 2) NOT NULL,
+    ->     FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
+    -> );
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> 
+mysql> -- Create order_items table
+mysql> CREATE TABLE order_items (
+    ->     item_id INT PRIMARY KEY AUTO_INCREMENT,
+    ->     order_id INT NOT NULL,
+    ->     product_id INT NOT NULL,
+    ->     quantity INT NOT NULL,
+    ->     item_price DECIMAL(10, 2) NOT NULL,
+    ->     FOREIGN KEY (order_id) REFERENCES orders(order_id),
+    ->     FOREIGN KEY (product_id) REFERENCES products(product_id)
+    -> );-- =============================================
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> -- SAMPLE DATA INSERTION
+mysql> -- =============================================
+mysql> 
+mysql> -- Insert data into customers
+mysql> INSERT INTO customers (first_name, last_name, email, city, state, signup_date) VALUES
+    -> ('John', 'Smith', 'john.smith@example.com', 'New York', 'NY', '2023-01-15'),
+    -> ('Sarah', 'Johnson', 'sarah.j@example.com', 'Los Angeles', 'CA', '2023-02-20'),
+    -> ('Michael', 'Brown', 'michael.b@example.com', 'Chicago', 'IL', '2023-03-05'),
+    -> ('Emily', 'Davis', 'emily.d@example.com', 'Houston', 'TX', '2023-01-30'),
+    -> ('Robert', 'Wilson', 'robert.w@example.com', 'Phoenix', 'AZ', '2023-02-10'),
+    -> ('Jennifer', 'Martinez', 'jennifer.m@example.com', 'Philadelphia', 'PA', '2023-03-15'),
+    -> ('David', 'Anderson', 'david.a@example.com', 'San Antonio', 'TX', '2023-01-25'),
+    -> ('Lisa', 'Thomas', 'lisa.t@example.com', 'San Diego', 'CA', '2023-02-28'),
+    -> ('James', 'Jackson', 'james.j@example.com', 'Dallas', 'TX', '2023-03-12'),
+    -> ('Mary', 'White', 'mary.w@example.com', 'San Jose', 'CA', '2023-01-18');
+Query OK, 10 rows affected (0.00 sec)
+Records: 10  Duplicates: 0  Warnings: 0
+
+mysql> 
+mysql> -- Insert data into products
+mysql> INSERT INTO products (product_name, category, price, stock_quantity) VALUES
+    -> ('Laptop Pro', 'Electronics', 1299.99, 25),
+    -> ('Smartphone X', 'Electronics', 899.99, 50),
+    -> ('Wireless Headphones', 'Electronics', 199.99, 100),
+    -> ('Coffee Maker', 'Home Appliances', 79.99, 30),
+    -> ('Blender', 'Home Appliances', 49.99, 40),
+    -> ('Running Shoes', 'Sports', 129.99, 75),
+    -> ('Yoga Mat', 'Sports', 29.99, 120),
+    -> ('Mystery Novel', 'Books', 14.99, 200),
+    -> ('Cookbook', 'Books', 24.99, 150),
+    -> ('Desk Chair', 'Furniture', 149.99, 15);
+Query OK, 10 rows affected (0.00 sec)
+Records: 10  Duplicates: 0  Warnings: 0
+
+mysql> 
+mysql> -- Insert data into orders
+mysql> INSERT INTO orders (customer_id, order_date, total_amount) VALUES
+    -> (1, '2023-04-10 14:30:00', 1499.98),
+    -> (2, '2023-04-11 10:15:00', 249.98),
+    -> (3, '2023-04-12 16:45:00', 899.99),
+    -> (4, '2023-04-13 13:20:00', 1329.98),
+    -> (2, '2023-04-14 09:30:00', 49.99),
+    -> (5, '2023-04-15 15:10:00', 179.98),
+    -> (6, '2023-04-16 11:05:00', 159.98),
+    -> (7, '2023-04-17 14:55:00', 39.98),
+    -> (8, '2023-04-18 12:40:00', 899.99),
+    -> (9, '2023-04-19 16:25:00', 229.98),
+    -> (10, '2023-04-20 10:50:00', 279.97),
+    -> (1, '2023-04-21 13:35:00', 24.99),
+    -> (3, '2023-04-22 15:15:00', 129.99);
+Query OK, 13 rows affected (0.00 sec)
+Records: 13  Duplicates: 0  Warnings: 0
+
+mysql> 
+mysql> -- Insert data into order_items
+mysql> INSERT INTO order_items (order_id, product_id, quantity, item_price) VALUES
+    -> (1, 1, 1, 1299.99),
+    -> (1, 3, 1, 199.99),
+    -> (2, 5, 1, 49.99),
+    -> (2, 7, 1, 29.99),
+    -> (2, 9, 1, 24.99),
+    -> (3, 2, 1, 899.99),
+    -> (4, 1, 1, 1299.99),
+    -> (4, 6, 1, 129.99),
+    -> (5, 5, 1, 49.99),
+    -> (6, 4, 1, 79.99),
+    -> (6, 8, 1, 14.99),
+    -> (6, 9, 1, 24.99),
+    -> (7, 6, 1, 129.99),
+    -> (7, 8, 2, 14.99),
+    -> (8, 8, 1, 14.99),
+    -> (8, 9, 1, 24.99),
+    -> (9, 2, 1, 899.99),
+    -> (10, 3, 1, 199.99),
+    -> (10, 6, 1, 129.99),
+    -> (11, 5, 1, 49.99),
+    -> (11, 7, 1, 29.99),
+    -> (11, 8, 1, 14.99),
+    -> (12, 9, 1, 24.99),
+    -> (13, 6, 1, 129.99);
+Query OK, 24 rows affected (0.01 sec)
+Records: 24  Duplicates: 0  Warnings: 0
+
+mysql> select * from customers;
++-------------+------------+-----------+------------------------+--------------+-------+-------------+
+| customer_id | first_name | last_name | email                  | city         | state | signup_date |
++-------------+------------+-----------+------------------------+--------------+-------+-------------+
+|           1 | John       | Smith     | john.smith@example.com | New York     | NY    | 2023-01-15  |
+|           2 | Sarah      | Johnson   | sarah.j@example.com    | Los Angeles  | CA    | 2023-02-20  |
+|           3 | Michael    | Brown     | michael.b@example.com  | Chicago      | IL    | 2023-03-05  |
+|           4 | Emily      | Davis     | emily.d@example.com    | Houston      | TX    | 2023-01-30  |
+|           5 | Robert     | Wilson    | robert.w@example.com   | Phoenix      | AZ    | 2023-02-10  |
+|           6 | Jennifer   | Martinez  | jennifer.m@example.com | Philadelphia | PA    | 2023-03-15  |
+|           7 | David      | Anderson  | david.a@example.com    | San Antonio  | TX    | 2023-01-25  |
+|           8 | Lisa       | Thomas    | lisa.t@example.com     | San Diego    | CA    | 2023-02-28  |
+|           9 | James      | Jackson   | james.j@example.com    | Dallas       | TX    | 2023-03-12  |
+|          10 | Mary       | White     | mary.w@example.com     | San Jose     | CA    | 2023-01-18  |
++-------------+------------+-----------+------------------------+--------------+-------+-------------+
+10 rows in set (0.00 sec)
+
+mysql> select * from products;
++------------+---------------------+-----------------+---------+----------------+
+| product_id | product_name        | category        | price   | stock_quantity |
++------------+---------------------+-----------------+---------+----------------+
+|          1 | Laptop Pro          | Electronics     | 1299.99 |             25 |
+|          2 | Smartphone X        | Electronics     |  899.99 |             50 |
+|          3 | Wireless Headphones | Electronics     |  199.99 |            100 |
+|          4 | Coffee Maker        | Home Appliances |   79.99 |             30 |
+|          5 | Blender             | Home Appliances |   49.99 |             40 |
+|          6 | Running Shoes       | Sports          |  129.99 |             75 |
+|          7 | Yoga Mat            | Sports          |   29.99 |            120 |
+|          8 | Mystery Novel       | Books           |   14.99 |            200 |
+|          9 | Cookbook            | Books           |   24.99 |            150 |
+|         10 | Desk Chair          | Furniture       |  149.99 |             15 |
++------------+---------------------+-----------------+---------+----------------+
+10 rows in set (0.00 sec)
+
+mysql> select * from orders;
++----------+-------------+---------------------+--------------+
+| order_id | customer_id | order_date          | total_amount |
++----------+-------------+---------------------+--------------+
+|        1 |           1 | 2023-04-10 14:30:00 |      1499.98 |
+|        2 |           2 | 2023-04-11 10:15:00 |       249.98 |
+|        3 |           3 | 2023-04-12 16:45:00 |       899.99 |
+|        4 |           4 | 2023-04-13 13:20:00 |      1329.98 |
+|        5 |           2 | 2023-04-14 09:30:00 |        49.99 |
+|        6 |           5 | 2023-04-15 15:10:00 |       179.98 |
+|        7 |           6 | 2023-04-16 11:05:00 |       159.98 |
+|        8 |           7 | 2023-04-17 14:55:00 |        39.98 |
+|        9 |           8 | 2023-04-18 12:40:00 |       899.99 |
+|       10 |           9 | 2023-04-19 16:25:00 |       229.98 |
+|       11 |          10 | 2023-04-20 10:50:00 |       279.97 |
+|       12 |           1 | 2023-04-21 13:35:00 |        24.99 |
+|       13 |           3 | 2023-04-22 15:15:00 |       129.99 |
++----------+-------------+---------------------+--------------+
+13 rows in set (0.00 sec)
+
+mysql> select * from order_items;
++---------+----------+------------+----------+------------+
+| item_id | order_id | product_id | quantity | item_price |
++---------+----------+------------+----------+------------+
+|       1 |        1 |          1 |        1 |    1299.99 |
+|       2 |        1 |          3 |        1 |     199.99 |
+|       3 |        2 |          5 |        1 |      49.99 |
+|       4 |        2 |          7 |        1 |      29.99 |
+|       5 |        2 |          9 |        1 |      24.99 |
+|       6 |        3 |          2 |        1 |     899.99 |
+|       7 |        4 |          1 |        1 |    1299.99 |
+|       8 |        4 |          6 |        1 |     129.99 |
+|       9 |        5 |          5 |        1 |      49.99 |
+|      10 |        6 |          4 |        1 |      79.99 |
+|      11 |        6 |          8 |        1 |      14.99 |
+|      12 |        6 |          9 |        1 |      24.99 |
+|      13 |        7 |          6 |        1 |     129.99 |
+|      14 |        7 |          8 |        2 |      14.99 |
+|      15 |        8 |          8 |        1 |      14.99 |
+|      16 |        8 |          9 |        1 |      24.99 |
+|      17 |        9 |          2 |        1 |     899.99 |
+|      18 |       10 |          3 |        1 |     199.99 |
+|      19 |       10 |          6 |        1 |     129.99 |
+|      20 |       11 |          5 |        1 |      49.99 |
+|      21 |       11 |          7 |        1 |      29.99 |
+|      22 |       11 |          8 |        1 |      14.99 |
+|      23 |       12 |          9 |        1 |      24.99 |
+|      24 |       13 |          6 |        1 |     129.99 |
++---------+----------+------------+----------+------------+
+24 rows in set (0.01 sec)
+
+mysql> -- Find all customers who have placed at least one order ;
+mysql> select distinct customer_id from customers;
++-------------+
+| customer_id |
++-------------+
+|           7 |
+|           4 |
+|           9 |
+|           6 |
+|           1 |
+|           8 |
+|          10 |
+|           3 |
+|           5 |
+|           2 |
++-------------+
+10 rows in set (0.00 sec)
+
+mysql> -- =============================================
+mysql> -- BASIC SUBQUERIES
+mysql> -- =============================================
+mysql> 
+mysql> -- Find all customers who have placed at least one order ;
+mysql> ;
+ERROR: 
+No query specified
+
+mysql> slect * from customers where customer_id IN
+    -> (select distinct customer_id from orders) ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'slect * from customers where customer_id IN
+(select distinct customer_id from or' at line 1
+mysql> select * from customers where customer_id IN (select distinct customer_id from orders);
++-------------+------------+-----------+------------------------+--------------+-------+-------------+
+| customer_id | first_name | last_name | email                  | city         | state | signup_date |
++-------------+------------+-----------+------------------------+--------------+-------+-------------+
+|           1 | John       | Smith     | john.smith@example.com | New York     | NY    | 2023-01-15  |
+|           2 | Sarah      | Johnson   | sarah.j@example.com    | Los Angeles  | CA    | 2023-02-20  |
+|           3 | Michael    | Brown     | michael.b@example.com  | Chicago      | IL    | 2023-03-05  |
+|           4 | Emily      | Davis     | emily.d@example.com    | Houston      | TX    | 2023-01-30  |
+|           5 | Robert     | Wilson    | robert.w@example.com   | Phoenix      | AZ    | 2023-02-10  |
+|           6 | Jennifer   | Martinez  | jennifer.m@example.com | Philadelphia | PA    | 2023-03-15  |
+|           7 | David      | Anderson  | david.a@example.com    | San Antonio  | TX    | 2023-01-25  |
+|           8 | Lisa       | Thomas    | lisa.t@example.com     | San Diego    | CA    | 2023-02-28  |
+|           9 | James      | Jackson   | james.j@example.com    | Dallas       | TX    | 2023-03-12  |
+|          10 | Mary       | White     | mary.w@example.com     | San Jose     | CA    | 2023-01-18  |
++-------------+------------+-----------+------------------------+--------------+-------+-------------+
+10 rows in set (0.00 sec)
+
+mysql> -- Finding customers who haven't placed orders;
+mysql> select * from customers where customer_id not IN (select distinct customer_id from orders);
+Empty set (0.01 sec)
+
+mysql> -- Find products with a price higher than average ;
+mysql> select avg(price) from products ;
++------------+
+| avg(price) |
++------------+
+| 287.990000 |
++------------+
+1 row in set (0.00 sec)
+
+mysql> select product_name,category,price from products where price > 
+    -> (select avg(price) from products );
++--------------+-------------+---------+
+| product_name | category    | price   |
++--------------+-------------+---------+
+| Laptop Pro   | Electronics | 1299.99 |
+| Smartphone X | Electronics |  899.99 |
++--------------+-------------+---------+
+2 rows in set (0.00 sec)
+
+mysql> -- Find categories that have more than 2 products ;
+mysql> select count(product_name) from products group by category having count(product_name) > 2 ;
++---------------------+
+| count(product_name) |
++---------------------+
+|                   3 |
++---------------------+
+1 row in set (0.00 sec)
+
+mysql> SELECT category, COUNT(*) 
+    -> FROM products 
+    -> GROUP BY category 
+    -> HAVING COUNT(*) > 2;
++-------------+----------+
+| category    | COUNT(*) |
++-------------+----------+
+| Electronics |        3 |
++-------------+----------+
+1 row in set (0.00 sec)
+
+mysql> -- =============================================
+mysql> -- SUBQUERIES IN THE WHERE CLAUSE
+mysql> -- =============================================
+mysql> 
+mysql> -- Find all orders made by customers from Texas;
+mysql> select first_name from customers where state = 'TX';
++------------+
+| first_name |
++------------+
+| Emily      |
+| David      |
+| James      |
++------------+
+3 rows in set (0.00 sec)
+
+mysql> SELECT * FROM ORDERS WHERE ORDER_ID IN 
+    -> (select first_name from customers where state = 'TX');
+Empty set (0.01 sec)
+
+mysql> SELECT * FROM ORDERS WHERE CUSTOMER_ID IN  (select CUSTOMER_ID from customers where state = 'TX');
++----------+-------------+---------------------+--------------+
+| order_id | customer_id | order_date          | total_amount |
++----------+-------------+---------------------+--------------+
+|        4 |           4 | 2023-04-13 13:20:00 |      1329.98 |
+|        8 |           7 | 2023-04-17 14:55:00 |        39.98 |
+|       10 |           9 | 2023-04-19 16:25:00 |       229.98 |
++----------+-------------+---------------------+--------------+
+3 rows in set (0.00 sec)
+
+mysql> -- =============================================
+mysql> -- JOIN QUERIES VS SUBQUERIES
+mysql> -- =============================================
+mysql> 
+mysql> -- Find all customers who ordered electronics products
+mysql> -- Using JOINs
+mysql> 
+mysql> SELECT * FROM customers c 
+    -> JOIN orders o ON c.customer_id = o.customer_id
+    -> JOIN order_items oi ON o.order_id = oi.order_id
+    -> JOIN products p ON p.product_id = oi.product_id
+    -> WHERE p.category = "Electronics";
++-------------+------------+-----------+------------------------+-----------+-------+-------------+----------+-------------+---------------------+--------------+---------+----------+------------+----------+------------+------------+---------------------+-------------+---------+----------------+
+| customer_id | first_name | last_name | email                  | city      | state | signup_date | order_id | customer_id | order_date          | total_amount | item_id | order_id | product_id | quantity | item_price | product_id | product_name        | category    | price   | stock_quantity |
++-------------+------------+-----------+------------------------+-----------+-------+-------------+----------+-------------+---------------------+--------------+---------+----------+------------+----------+------------+------------+---------------------+-------------+---------+----------------+
+|           1 | John       | Smith     | john.smith@example.com | New York  | NY    | 2023-01-15  |        1 |           1 | 2023-04-10 14:30:00 |      1499.98 |       1 |        1 |          1 |        1 |    1299.99 |          1 | Laptop Pro          | Electronics | 1299.99 |             25 |
+|           4 | Emily      | Davis     | emily.d@example.com    | Houston   | TX    | 2023-01-30  |        4 |           4 | 2023-04-13 13:20:00 |      1329.98 |       7 |        4 |          1 |        1 |    1299.99 |          1 | Laptop Pro          | Electronics | 1299.99 |             25 |
+|           3 | Michael    | Brown     | michael.b@example.com  | Chicago   | IL    | 2023-03-05  |        3 |           3 | 2023-04-12 16:45:00 |       899.99 |       6 |        3 |          2 |        1 |     899.99 |          2 | Smartphone X        | Electronics |  899.99 |             50 |
+|           8 | Lisa       | Thomas    | lisa.t@example.com     | San Diego | CA    | 2023-02-28  |        9 |           8 | 2023-04-18 12:40:00 |       899.99 |      17 |        9 |          2 |        1 |     899.99 |          2 | Smartphone X        | Electronics |  899.99 |             50 |
+|           1 | John       | Smith     | john.smith@example.com | New York  | NY    | 2023-01-15  |        1 |           1 | 2023-04-10 14:30:00 |      1499.98 |       2 |        1 |          3 |        1 |     199.99 |          3 | Wireless Headphones | Electronics |  199.99 |            100 |
+|           9 | James      | Jackson   | james.j@example.com    | Dallas    | TX    | 2023-03-12  |       10 |           9 | 2023-04-19 16:25:00 |       229.98 |      18 |       10 |          3 |        1 |     199.99 |          3 | Wireless Headphones | Electronics |  199.99 |            100 |
++-------------+------------+-----------+------------------------+-----------+-------+-------------+----------+-------------+---------------------+--------------+---------+----------+------------+----------+------------+------------+---------------------+-------------+---------+----------------+
+6 rows in set (0.00 sec)
+
+mysql> SELECT * FROM COSTUMERS C JOIN ORDERS O ON
+    -> C.CUSTOMER_ID = O.ORDER_ID JOIN order_items OI ON
+    -> O.ORDER_ID = OI.ORDER_ID JOIN PRODUCTS P 
+    -> WHERE OI.PRODUCT_ID IN (SELECT PRODUCT_ID FROM PRODUCTS
+    ->  WHERE category = "Electronics"
+    -> );
+ERROR 1146 (42S02): Table 'ysq.costumers' doesn't exist
+mysql> SELECT * FROM CUSTOMERS C JOIN ORDERS O ON C.CUSTOMER_ID = O.ORDER_ID JOIN order_items OI ON O.ORDER_ID = OI.ORDER_ID JOIN PRODUCTS P  WHERE OI.PRODUCT_ID IN (SELECT PRODUCT_ID FROM PRODUCTS  WHERE category = "Electronics" );
++-------------+------------+-----------+------------------------+----------+-------+-------------+----------+-------------+---------------------+--------------+---------+----------+------------+----------+------------+------------+---------------------+-----------------+---------+----------------+
+| customer_id | first_name | last_name | email                  | city     | state | signup_date | order_id | customer_id | order_date          | total_amount | item_id | order_id | product_id | quantity | item_price | product_id | product_name        | category        | price   | stock_quantity |
++-------------+------------+-----------+------------------------+----------+-------+-------------+----------+-------------+---------------------+--------------+---------+----------+------------+----------+------------+------------+---------------------+-----------------+---------+----------------+
+|          10 | Mary       | White     | mary.w@example.com     | San Jose | CA    | 2023-01-18  |       10 |           9 | 2023-04-19 16:25:00 |       229.98 |      18 |       10 |          3 |        1 |     199.99 |          1 | Laptop Pro          | Electronics     | 1299.99 |             25 |
+|           1 | John       | Smith     | john.smith@example.com | New York | NY    | 2023-01-15  |        1 |           1 | 2023-04-10 14:30:00 |      1499.98 |       2 |        1 |          3 |        1 |     199.99 |          1 | Laptop Pro          | Electronics     | 1299.99 |             25 |
+|           9 | James      | Jackson   | james.j@example.com    | Dallas   | TX    | 2023-03-12  |        9 |           8 | 2023-04-18 12:40:00 |       899.99 |      17 |        9 |          2 |        1 |     899.99 |          1 | Laptop Pro          | Electronics     | 1299.99 |             25 |
+|           3 | Michael    | Brown     | michael.b@example.com  | Chicago  | IL    | 2023-03-05  |        3 |           3 | 2023-04-12 16:45:00 |       899.99 |       6 |        3 |          2 |        1 |     899.99 |          1 | Laptop Pro          | Electronics     | 1299.99 |             25 |
+|           4 | Emily      | Davis     | emily.d@example.com    | Houston  | TX    | 2023-01-30  |        4 |           4 | 2023-04-13 13:20:00 |      1329.98 |       7 |        4 |          1 |        1 |    1299.99 |          1 | Laptop Pro          | Electronics     | 1299.99 |             25 |
+|           1 | John       | Smith     | john.smith@example.com | New York | NY    | 2023-01-15  |        1 |           1 | 2023-04-10 14:30:00 |      1499.98 |       1 |        1 |          1 |        1 |    1299.99 |          1 | Laptop Pro          | Electronics     | 1299.99 |             25 |
+|          10 | Mary       | White     | mary.w@example.com     | San Jose | CA    | 2023-01-18  |       10 |           9 | 2023-04-19 16:25:00 |       229.98 |      18 |       10 |          3 |        1 |     199.99 |          2 | Smartphone X        | Electronics     |  899.99 |             50 |
+|           1 | John       | Smith     | john.smith@example.com | New York | NY    | 2023-01-15  |        1 |           1 | 2023-04-10 14:30:00 |      1499.98 |       2 |        1 |          3 |        1 |     199.99 |          2 | Smartphone X        | Electronics     |  899.99 |             50 |
+|           9 | James      | Jackson   | james.j@example.com    | Dallas   | TX    | 2023-03-12  |        9 |           8 | 2023-04-18 12:40:00 |       899.99 |      17 |        9 |          2 |        1 |     899.99 |          2 | Smartphone X        | Electronics     |  899.99 |             50 |
+|           3 | Michael    | Brown     | michael.b@example.com  | Chicago  | IL    | 2023-03-05  |        3 |           3 | 2023-04-12 16:45:00 |       899.99 |       6 |        3 |          2 |        1 |     899.99 |          2 | Smartphone X        | Electronics     |  899.99 |             50 |
+|           4 | Emily      | Davis     | emily.d@example.com    | Houston  | TX    | 2023-01-30  |        4 |           4 | 2023-04-13 13:20:00 |      1329.98 |       7 |        4 |          1 |        1 |    1299.99 |          2 | Smartphone X        | Electronics     |  899.99 |             50 |
+|           1 | John       | Smith     | john.smith@example.com | New York | NY    | 2023-01-15  |        1 |           1 | 2023-04-10 14:30:00 |      1499.98 |       1 |        1 |          1 |        1 |    1299.99 |          2 | Smartphone X        | Electronics     |  899.99 |             50 |
+|          10 | Mary       | White     | mary.w@example.com     | San Jose | CA    | 2023-01-18  |       10 |           9 | 2023-04-19 16:25:00 |       229.98 |      18 |       10 |          3 |        1 |     199.99 |          3 | Wireless Headphones | Electronics     |  199.99 |            100 |
+|           1 | John       | Smith     | john.smith@example.com | New York | NY    | 2023-01-15  |        1 |           1 | 2023-04-10 14:30:00 |      1499.98 |       2 |        1 |          3 |        1 |     199.99 |          3 | Wireless Headphones | Electronics     |  199.99 |            100 |
+|           9 | James      | Jackson   | james.j@example.com    | Dallas   | TX    | 2023-03-12  |        9 |           8 | 2023-04-18 12:40:00 |       899.99 |      17 |        9 |          2 |        1 |     899.99 |          3 | Wireless Headphones | Electronics     |  199.99 |            100 |
+|           3 | Michael    | Brown     | michael.b@example.com  | Chicago  | IL    | 2023-03-05  |        3 |           3 | 2023-04-12 16:45:00 |       899.99 |       6 |        3 |          2 |        1 |     899.99 |          3 | Wireless Headphones | Electronics     |  199.99 |            100 |
+|           4 | Emily      | Davis     | emily.d@example.com    | Houston  | TX    | 2023-01-30  |        4 |           4 | 2023-04-13 13:20:00 |      1329.98 |       7 |        4 |          1 |        1 |    1299.99 |          3 | Wireless Headphones | Electronics     |  199.99 |            100 |
+|           1 | John       | Smith     | john.smith@example.com | New York | NY    | 2023-01-15  |        1 |           1 | 2023-04-10 14:30:00 |      1499.98 |       1 |        1 |          1 |        1 |    1299.99 |          3 | Wireless Headphones | Electronics     |  199.99 |            100 |
+|          10 | Mary       | White     | mary.w@example.com     | San Jose | CA    | 2023-01-18  |       10 |           9 | 2023-04-19 16:25:00 |       229.98 |      18 |       10 |          3 |        1 |     199.99 |          4 | Coffee Maker        | Home Appliances |   79.99 |             30 |
+|           1 | John       | Smith     | john.smith@example.com | New York | NY    | 2023-01-15  |        1 |           1 | 2023-04-10 14:30:00 |      1499.98 |       2 |        1 |          3 |        1 |     199.99 |          4 | Coffee Maker        | Home Appliances |   79.99 |             30 |
+|           9 | James      | Jackson   | james.j@example.com    | Dallas   | TX    | 2023-03-12  |        9 |           8 | 2023-04-18 12:40:00 |       899.99 |      17 |        9 |          2 |        1 |     899.99 |          4 | Coffee Maker        | Home Appliances |   79.99 |             30 |
+|           3 | Michael    | Brown     | michael.b@example.com  | Chicago  | IL    | 2023-03-05  |        3 |           3 | 2023-04-12 16:45:00 |       899.99 |       6 |        3 |          2 |        1 |     899.99 |          4 | Coffee Maker        | Home Appliances |   79.99 |             30 |
+|           4 | Emily      | Davis     | emily.d@example.com    | Houston  | TX    | 2023-01-30  |        4 |           4 | 2023-04-13 13:20:00 |      1329.98 |       7 |        4 |          1 |        1 |    1299.99 |          4 | Coffee Maker        | Home Appliances |   79.99 |             30 |
+|           1 | John       | Smith     | john.smith@example.com | New York | NY    | 2023-01-15  |        1 |           1 | 2023-04-10 14:30:00 |      1499.98 |       1 |        1 |          1 |        1 |    1299.99 |          4 | Coffee Maker        | Home Appliances |   79.99 |             30 |
+|          10 | Mary       | White     | mary.w@example.com     | San Jose | CA    | 2023-01-18  |       10 |           9 | 2023-04-19 16:25:00 |       229.98 |      18 |       10 |          3 |        1 |     199.99 |          5 | Blender             | Home Appliances |   49.99 |             40 |
+|           1 | John       | Smith     | john.smith@example.com | New York | NY    | 2023-01-15  |        1 |           1 | 2023-04-10 14:30:00 |      1499.98 |       2 |        1 |          3 |        1 |     199.99 |          5 | Blender             | Home Appliances |   49.99 |             40 |
+|           9 | James      | Jackson   | james.j@example.com    | Dallas   | TX    | 2023-03-12  |        9 |           8 | 2023-04-18 12:40:00 |       899.99 |      17 |        9 |          2 |        1 |     899.99 |          5 | Blender             | Home Appliances |   49.99 |             40 |
+|           3 | Michael    | Brown     | michael.b@example.com  | Chicago  | IL    | 2023-03-05  |        3 |           3 | 2023-04-12 16:45:00 |       899.99 |       6 |        3 |          2 |        1 |     899.99 |          5 | Blender             | Home Appliances |   49.99 |             40 |
+|           4 | Emily      | Davis     | emily.d@example.com    | Houston  | TX    | 2023-01-30  |        4 |           4 | 2023-04-13 13:20:00 |      1329.98 |       7 |        4 |          1 |        1 |    1299.99 |          5 | Blender             | Home Appliances |   49.99 |             40 |
+|           1 | John       | Smith     | john.smith@example.com | New York | NY    | 2023-01-15  |        1 |           1 | 2023-04-10 14:30:00 |      1499.98 |       1 |        1 |          1 |        1 |    1299.99 |          5 | Blender             | Home Appliances |   49.99 |             40 |
+|          10 | Mary       | White     | mary.w@example.com     | San Jose | CA    | 2023-01-18  |       10 |           9 | 2023-04-19 16:25:00 |       229.98 |      18 |       10 |          3 |        1 |     199.99 |          6 | Running Shoes       | Sports          |  129.99 |             75 |
+|           1 | John       | Smith     | john.smith@example.com | New York | NY    | 2023-01-15  |        1 |           1 | 2023-04-10 14:30:00 |      1499.98 |       2 |        1 |          3 |        1 |     199.99 |          6 | Running Shoes       | Sports          |  129.99 |             75 |
+|           9 | James      | Jackson   | james.j@example.com    | Dallas   | TX    | 2023-03-12  |        9 |           8 | 2023-04-18 12:40:00 |       899.99 |      17 |        9 |          2 |        1 |     899.99 |          6 | Running Shoes       | Sports          |  129.99 |             75 |
+|           3 | Michael    | Brown     | michael.b@example.com  | Chicago  | IL    | 2023-03-05  |        3 |           3 | 2023-04-12 16:45:00 |       899.99 |       6 |        3 |          2 |        1 |     899.99 |          6 | Running Shoes       | Sports          |  129.99 |             75 |
+|           4 | Emily      | Davis     | emily.d@example.com    | Houston  | TX    | 2023-01-30  |        4 |           4 | 2023-04-13 13:20:00 |      1329.98 |       7 |        4 |          1 |        1 |    1299.99 |          6 | Running Shoes       | Sports          |  129.99 |             75 |
+|           1 | John       | Smith     | john.smith@example.com | New York | NY    | 2023-01-15  |        1 |           1 | 2023-04-10 14:30:00 |      1499.98 |       1 |        1 |          1 |        1 |    1299.99 |          6 | Running Shoes       | Sports          |  129.99 |             75 |
+|          10 | Mary       | White     | mary.w@example.com     | San Jose | CA    | 2023-01-18  |       10 |           9 | 2023-04-19 16:25:00 |       229.98 |      18 |       10 |          3 |        1 |     199.99 |          7 | Yoga Mat            | Sports          |   29.99 |            120 |
+|           1 | John       | Smith     | john.smith@example.com | New York | NY    | 2023-01-15  |        1 |           1 | 2023-04-10 14:30:00 |      1499.98 |       2 |        1 |          3 |        1 |     199.99 |          7 | Yoga Mat            | Sports          |   29.99 |            120 |
+|           9 | James      | Jackson   | james.j@example.com    | Dallas   | TX    | 2023-03-12  |        9 |           8 | 2023-04-18 12:40:00 |       899.99 |      17 |        9 |          2 |        1 |     899.99 |          7 | Yoga Mat            | Sports          |   29.99 |            120 |
+|           3 | Michael    | Brown     | michael.b@example.com  | Chicago  | IL    | 2023-03-05  |        3 |           3 | 2023-04-12 16:45:00 |       899.99 |       6 |        3 |          2 |        1 |     899.99 |          7 | Yoga Mat            | Sports          |   29.99 |            120 |
+|           4 | Emily      | Davis     | emily.d@example.com    | Houston  | TX    | 2023-01-30  |        4 |           4 | 2023-04-13 13:20:00 |      1329.98 |       7 |        4 |          1 |        1 |    1299.99 |          7 | Yoga Mat            | Sports          |   29.99 |            120 |
+|           1 | John       | Smith     | john.smith@example.com | New York | NY    | 2023-01-15  |        1 |           1 | 2023-04-10 14:30:00 |      1499.98 |       1 |        1 |          1 |        1 |    1299.99 |          7 | Yoga Mat            | Sports          |   29.99 |            120 |
+|          10 | Mary       | White     | mary.w@example.com     | San Jose | CA    | 2023-01-18  |       10 |           9 | 2023-04-19 16:25:00 |       229.98 |      18 |       10 |          3 |        1 |     199.99 |          8 | Mystery Novel       | Books           |   14.99 |            200 |
+|           1 | John       | Smith     | john.smith@example.com | New York | NY    | 2023-01-15  |        1 |           1 | 2023-04-10 14:30:00 |      1499.98 |       2 |        1 |          3 |        1 |     199.99 |          8 | Mystery Novel       | Books           |   14.99 |            200 |
+|           9 | James      | Jackson   | james.j@example.com    | Dallas   | TX    | 2023-03-12  |        9 |           8 | 2023-04-18 12:40:00 |       899.99 |      17 |        9 |          2 |        1 |     899.99 |          8 | Mystery Novel       | Books           |   14.99 |            200 |
+|           3 | Michael    | Brown     | michael.b@example.com  | Chicago  | IL    | 2023-03-05  |        3 |           3 | 2023-04-12 16:45:00 |       899.99 |       6 |        3 |          2 |        1 |     899.99 |          8 | Mystery Novel       | Books           |   14.99 |            200 |
+|           4 | Emily      | Davis     | emily.d@example.com    | Houston  | TX    | 2023-01-30  |        4 |           4 | 2023-04-13 13:20:00 |      1329.98 |       7 |        4 |          1 |        1 |    1299.99 |          8 | Mystery Novel       | Books           |   14.99 |            200 |
+|           1 | John       | Smith     | john.smith@example.com | New York | NY    | 2023-01-15  |        1 |           1 | 2023-04-10 14:30:00 |      1499.98 |       1 |        1 |          1 |        1 |    1299.99 |          8 | Mystery Novel       | Books           |   14.99 |            200 |
+|          10 | Mary       | White     | mary.w@example.com     | San Jose | CA    | 2023-01-18  |       10 |           9 | 2023-04-19 16:25:00 |       229.98 |      18 |       10 |          3 |        1 |     199.99 |          9 | Cookbook            | Books           |   24.99 |            150 |
+|           1 | John       | Smith     | john.smith@example.com | New York | NY    | 2023-01-15  |        1 |           1 | 2023-04-10 14:30:00 |      1499.98 |       2 |        1 |          3 |        1 |     199.99 |          9 | Cookbook            | Books           |   24.99 |            150 |
+|           9 | James      | Jackson   | james.j@example.com    | Dallas   | TX    | 2023-03-12  |        9 |           8 | 2023-04-18 12:40:00 |       899.99 |      17 |        9 |          2 |        1 |     899.99 |          9 | Cookbook            | Books           |   24.99 |            150 |
+|           3 | Michael    | Brown     | michael.b@example.com  | Chicago  | IL    | 2023-03-05  |        3 |           3 | 2023-04-12 16:45:00 |       899.99 |       6 |        3 |          2 |        1 |     899.99 |          9 | Cookbook            | Books           |   24.99 |            150 |
+|           4 | Emily      | Davis     | emily.d@example.com    | Houston  | TX    | 2023-01-30  |        4 |           4 | 2023-04-13 13:20:00 |      1329.98 |       7 |        4 |          1 |        1 |    1299.99 |          9 | Cookbook            | Books           |   24.99 |            150 |
+|           1 | John       | Smith     | john.smith@example.com | New York | NY    | 2023-01-15  |        1 |           1 | 2023-04-10 14:30:00 |      1499.98 |       1 |        1 |          1 |        1 |    1299.99 |          9 | Cookbook            | Books           |   24.99 |            150 |
+|          10 | Mary       | White     | mary.w@example.com     | San Jose | CA    | 2023-01-18  |       10 |           9 | 2023-04-19 16:25:00 |       229.98 |      18 |       10 |          3 |        1 |     199.99 |         10 | Desk Chair          | Furniture       |  149.99 |             15 |
+|           1 | John       | Smith     | john.smith@example.com | New York | NY    | 2023-01-15  |        1 |           1 | 2023-04-10 14:30:00 |      1499.98 |       2 |        1 |          3 |        1 |     199.99 |         10 | Desk Chair          | Furniture       |  149.99 |             15 |
+|           9 | James      | Jackson   | james.j@example.com    | Dallas   | TX    | 2023-03-12  |        9 |           8 | 2023-04-18 12:40:00 |       899.99 |      17 |        9 |          2 |        1 |     899.99 |         10 | Desk Chair          | Furniture       |  149.99 |             15 |
+|           3 | Michael    | Brown     | michael.b@example.com  | Chicago  | IL    | 2023-03-05  |        3 |           3 | 2023-04-12 16:45:00 |       899.99 |       6 |        3 |          2 |        1 |     899.99 |         10 | Desk Chair          | Furniture       |  149.99 |             15 |
+|           4 | Emily      | Davis     | emily.d@example.com    | Houston  | TX    | 2023-01-30  |        4 |           4 | 2023-04-13 13:20:00 |      1329.98 |       7 |        4 |          1 |        1 |    1299.99 |         10 | Desk Chair          | Furniture       |  149.99 |             15 |
+|           1 | John       | Smith     | john.smith@example.com | New York | NY    | 2023-01-15  |        1 |           1 | 2023-04-10 14:30:00 |      1499.98 |       1 |        1 |          1 |        1 |    1299.99 |         10 | Desk Chair          | Furniture       |  149.99 |             15 |
++-------------+------------+-----------+------------------------+----------+-------+-------------+----------+-------------+---------------------+--------------+---------+----------+------------+----------+------------+------------+---------------------+-----------------+---------+----------------+
+60 rows in set (0.01 sec)
+
+mysql> -- Using subquery
+mysql> SELECT * FROM customers c 
+    -> JOIN orders o ON c.customer_id = o.customer_id
+    -> JOIN order_items oi ON o.order_id = oi.order_id
+    -> WHERE oi.product_id IN (
+    ->     SELECT product_id FROM products WHERE category = "Electronics"
+    -> );
++-------------+------------+-----------+------------------------+-----------+-------+-------------+----------+-------------+---------------------+--------------+---------+----------+------------+----------+------------+
+| customer_id | first_name | last_name | email                  | city      | state | signup_date | order_id | customer_id | order_date          | total_amount | item_id | order_id | product_id | quantity | item_price |
++-------------+------------+-----------+------------------------+-----------+-------+-------------+----------+-------------+---------------------+--------------+---------+----------+------------+----------+------------+
+|           1 | John       | Smith     | john.smith@example.com | New York  | NY    | 2023-01-15  |        1 |           1 | 2023-04-10 14:30:00 |      1499.98 |       1 |        1 |          1 |        1 |    1299.99 |
+|           4 | Emily      | Davis     | emily.d@example.com    | Houston   | TX    | 2023-01-30  |        4 |           4 | 2023-04-13 13:20:00 |      1329.98 |       7 |        4 |          1 |        1 |    1299.99 |
+|           3 | Michael    | Brown     | michael.b@example.com  | Chicago   | IL    | 2023-03-05  |        3 |           3 | 2023-04-12 16:45:00 |       899.99 |       6 |        3 |          2 |        1 |     899.99 |
+|           8 | Lisa       | Thomas    | lisa.t@example.com     | San Diego | CA    | 2023-02-28  |        9 |           8 | 2023-04-18 12:40:00 |       899.99 |      17 |        9 |          2 |        1 |     899.99 |
+|           1 | John       | Smith     | john.smith@example.com | New York  | NY    | 2023-01-15  |        1 |           1 | 2023-04-10 14:30:00 |      1499.98 |       2 |        1 |          3 |        1 |     199.99 |
+|           9 | James      | Jackson   | james.j@example.com    | Dallas    | TX    | 2023-03-12  |       10 |           9 | 2023-04-19 16:25:00 |       229.98 |      18 |       10 |          3 |        1 |     199.99 |
++-------------+------------+-----------+------------------------+-----------+-------+-------------+----------+-------------+---------------------+--------------+---------+----------+------------+----------+------------+
+6 rows in set (0.00 sec)
+
+mysql> 
