@@ -1,4 +1,59 @@
-mysql> show databases;
+-- =============================================
+mysql> -- SUBQUERIES WITH AVERAGE CALCULATION
+mysql> -- =============================================
+mysql> 
+mysql> -- Customers who spent more than average
+mysql> -- 1. Calculate the total amount spent by each customer
+mysql> -- 2. Calculate the average total spending across all customers
+mysql> -- 3. Identify customers whose total spending exceeds this average
+mysql> 
+mysql> -- First attempt (fails - need alias)
+mysql> SELECT SUM(TOTAL_AMOUNT) FROM ORDERS;
++-------------------+
+| SUM(TOTAL_AMOUNT) |
++-------------------+
+|           5974.78 |
++-------------------+
+1 row in set (0.00 sec)
+
+mysql> SELECT AVG(TOTAL_SPENT) FROM (SELECT CUSTOMER_ID,SUM(TOTAL_AMOUNT) AS TOTAL_SPENT FROM ORDERS GROUP BY CUSTOMER_ID) AS SPENT;
++------------------+
+| AVG(TOTAL_SPENT) |
++------------------+
+|       597.478000 |
++------------------+
+1 row in set (0.00 sec)
+
+mysql> -- Correct version with alias
+mysql> SELECT AVG(total_spent) AS average_customer_spending FROM
+    ->  (SELECT customer_id, SUM(total_amount) AS total_spent FROM orders GROUP BY customer_id) AS customer_total;
++---------------------------+
+| average_customer_spending |
++---------------------------+
+|                597.478000 |
++---------------------------+
+1 row in set (0.00 sec)
+
+mysql> SELECT *,(SELECT SUM(TOTAL_AMOUNT) FROM ORDERS WHERE CUSTOMER_ID=CUSTOMERS.CUSTOMER_ID) AS TOTAL_SPENT FROM CUSTOMERS
+    -> WHERE
+    -> (SELECT AVG(total_spent) AS average_customer_spending FROM
+    ->     ->  (SELECT customer_id, SUM(total_amount) AS total_spent FROM orders GROUP BY customer_id) AS customer_total);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '->  (SELECT customer_id, SUM(total_amount) AS total_spent FROM orders GROUP BY c' at line 4
+mysql> SELECT *,(SELECT SUM(TOTAL_AMOUNT) FROM ORDERS WHERE CUSTOMER_ID=CUSTOMERS.CUSTOMER_ID) AS TOTAL_SPENT FROM CUSTOMERS WHERE (SELECT AVG(total_spent) AS average_customer_spending FROM  (SELECT customer_id, SUM(total_amount) AS total_spent FROM orders GROUP BY customer_id) AS customer_total);
++-------------+------------+-----------+------------------------+--------------+-------+-------------+-------------+
+| customer_id | first_name | last_name | email                  | city         | state | signup_date | TOTAL_SPENT |
++-------------+------------+-----------+------------------------+--------------+-------+-------------+-------------+
+|           1 | John       | Smith     | john.smith@example.com | New York     | NY    | 2023-01-15  |     1524.97 |
+|           2 | Sarah      | Johnson   | sarah.j@example.com    | Los Angeles  | CA    | 2023-02-20  |      299.97 |
+|           3 | Michael    | Brown     | michael.b@example.com  | Chicago      | IL    | 2023-03-05  |     1029.98 |
+|           4 | Emily      | Davis     | emily.d@example.com    | Houston      | TX    | 2023-01-30  |     1329.98 |
+|           5 | Robert     | Wilson    | robert.w@example.com   | Phoenix      | AZ    | 2023-02-10  |      179.98 |
+|           6 | Jennifer   | Martinez  | jennifer.m@example.com | Philadelphia | PA    | 2023-03-15  |      159.98 |
+|           7 | David      | Anderson  | david.a@example.com    | San Antonio  | TX    | 2023-01-25  |       39.98 |
+|           8 | Lisa       | Thomas    | lisa.t@example.com     | San Diego    | CA    | 2023-02-28  |      899.99 |
+|           9 | James      | Jackson   | james.j@example.com    | Dallas       | TX    | 2023-03-12  |      229.98 |
+|          10 | Mary       | White     | mary.w@example.com     | San Jose     | CA    | 2023-01-18  |      279.97 |
++-------------+------------+-----------+------------------------+--------------+-------+-------------+-------------+mysql> show databases;
 +--------------------+
 | Database           |
 +--------------------+
