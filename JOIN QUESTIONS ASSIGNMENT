@@ -956,7 +956,330 @@ mysql> SELECT
 +--------------+------------------+--------------+-----------+---------------------------+
 10 rows in set (0.00 sec)
 
+mysql> mysql> -- ====================================================================
+mysql> -- MySQL UNION Lecture - Complete SQL Script
+mysql> -- ====================================================================
 mysql> 
+mysql> -- Introduction to UNION and UNION ALL
+mysql> -- ====================================================================
+mysql> -- UNION allows us to combine result sets from multiple SELECT queries into a single result set
+mysql> -- Key points:
+mysql> -- - Combines rows from multiple queries into a single result set
+mysql> -- - Appends rows vertically (stacks them on top of each other)
+mysql> -- - Requires that all queries have the same number of columns
+mysql> -- - Column data types must be compatible across all queries
+mysql> -- - Eliminates duplicate rows by default (use UNION ALL to keep duplicates)
+mysql> -- - Uses the column names from the first SELECT statement for the final result set
+mysql> -- - Ignores column names from subsequent queries
+mysql> 
+mysql> -- Database Setup
+mysql> -- ====================================================================
+mysql> CREATE DATABASE union_demo;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> USE union_demo;
+Database changed
+mysql> 
+mysql> -- Create tables for our demonstration
+mysql> CREATE TABLE headquarters_employees (
+    ->     employee_id INT PRIMARY KEY,
+    ->     first_name VARCHAR(50),
+    ->     last_name VARCHAR(50),
+    ->     email VARCHAR(100),
+    ->     hire_date DATE,
+    ->     department VARCHAR(50),
+    ->     salary DECIMAL(10,2)
+    -> );
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> 
+mysql> CREATE TABLE branch_employees (
+    ->     employee_id INT PRIMARY KEY,
+    ->     first_name VARCHAR(50),
+    ->     last_name VARCHAR(50),
+    ->     email VARCHAR(100),
+    ->     hire_date DATE,
+    ->     department VARCHAR(50),
+    ->     salary DECIMAL(10,2)
+    -> );
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> 
+mysql> CREATE TABLE customers (
+    ->     customer_id INT PRIMARY KEY,
+    ->     first_name VARCHAR(50),
+    ->     last_name VARCHAR(50),
+    ->     email VARCHAR(100),
+    ->     signup_date DATE,
+    ->     status VARCHAR(20)
+    -> );
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> 
+mysql> -- Sample Data
+mysql> -- ====================================================================
+mysql> -- Insert data into headquarters_employees
+mysql> INSERT INTO headquarters_employees VALUES
+    -> (101, 'John', 'Smith', 'john.smith@company.com', '2018-03-15', 'IT', 75000.00),
+    -> (102, 'Mary', 'Johnson', 'mary.johnson@company.com', '2019-06-22', 'HR', 65000.00),
+    -> (103, 'Robert', 'Williams', 'robert.williams@company.com', '2017-11-08', 'Finance', 82000.00),
+    -> (104, 'Susan', 'Brown', 'susan.brown@company.com', '2020-01-30', 'Marketing', 68000.00),
+    -> (105, 'Michael', 'Davis', 'michael.davis@company.com', '2018-09-12', 'IT', 78000.00);
+Query OK, 5 rows affected (0.00 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> 
+mysql> -- Insert data into branch_employees
+mysql> INSERT INTO branch_employees VALUES
+    -> (201, 'James', 'Wilson', 'james.wilson@company.com', '2019-04-18', 'Sales', 62000.00),
+    -> (202, 'Patricia', 'Moore', 'patricia.moore@company.com', '2020-07-25', 'Marketing', 59000.00),
+    -> (203, 'Linda', 'Taylor', 'linda.taylor@company.com', '2018-08-15', 'HR', 61000.00),
+    -> (204, 'Robert', 'Williams', 'robert.williams@company.com', '2017-11-08', 'Finance', 82000.00), -- Duplicate employee who works at both locations
+    -> (205, 'Elizabeth', 'Anderson', 'elizabeth.anderson@company.com', '2019-12-03', 'Sales', 64000.00);
+Query OK, 5 rows affected (0.00 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> 
+mysql> -- Insert data into customers
+mysql> INSERT INTO customers VALUES
+    -> (1001, 'David', 'Miller', 'david.miller@email.com', '2019-02-14', 'Active'),
+    -> (1002, 'Sarah', 'Wilson', 'sarah.wilson@email.com', '2020-05-20', 'Active'),
+    -> (1003, 'Michael', 'Davis', 'michael.davis@email.com', '2018-11-30', 'Inactive'), -- Same name as an employee
+    -> (1004, 'Jennifer', 'Garcia', 'jennifer.garcia@email.com', '2021-01-05', 'Active'),
+    -> (1005, 'Robert', 'Martinez', 'robert.martinez@email.com', '2019-08-22', 'Active');
+Query OK, 5 rows affected (0.00 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> 
+mysql> -- View table data
+mysql> -- ====================================================================
+mysql> SELECT * FROM headquarters_employees;
++-------------+------------+-----------+-----------------------------+------------+------------+----------+
+| employee_id | first_name | last_name | email                       | hire_date  | department | salary   |
++-------------+------------+-----------+-----------------------------+------------+------------+----------+
+|         101 | John       | Smith     | john.smith@company.com      | 2018-03-15 | IT         | 75000.00 |
+|         102 | Mary       | Johnson   | mary.johnson@company.com    | 2019-06-22 | HR         | 65000.00 |
+|         103 | Robert     | Williams  | robert.williams@company.com | 2017-11-08 | Finance    | 82000.00 |
+|         104 | Susan      | Brown     | susan.brown@company.com     | 2020-01-30 | Marketing  | 68000.00 |
+|         105 | Michael    | Davis     | michael.davis@company.com   | 2018-09-12 | IT         | 78000.00 |
++-------------+------------+-----------+-----------------------------+------------+------------+----------+
+5 rows in set (0.00 sec)
+
+mysql> SELECT * FROM branch_employees;
++-------------+------------+-----------+--------------------------------+------------+------------+----------+
+| employee_id | first_name | last_name | email                          | hire_date  | department | salary   |
++-------------+------------+-----------+--------------------------------+------------+------------+----------+
+|         201 | James      | Wilson    | james.wilson@company.com       | 2019-04-18 | Sales      | 62000.00 |
+|         202 | Patricia   | Moore     | patricia.moore@company.com     | 2020-07-25 | Marketing  | 59000.00 |
+|         203 | Linda      | Taylor    | linda.taylor@company.com       | 2018-08-15 | HR         | 61000.00 |
+|         204 | Robert     | Williams  | robert.williams@company.com    | 2017-11-08 | Finance    | 82000.00 |
+|         205 | Elizabeth  | Anderson  | elizabeth.anderson@company.com | 2019-12-03 | Sales      | 64000.00 |
++-------------+------------+-----------+--------------------------------+------------+------------+----------+
+5 rows in set (0.00 sec)
+
+mysql> SELECT * FROM customers;
++-------------+------------+-----------+---------------------------+-------------+----------+
+| customer_id | first_name | last_name | email                     | signup_date | status   |
++-------------+------------+-----------+---------------------------+-------------+----------+
+|        1001 | David      | Miller    | david.miller@email.com    | 2019-02-14  | Active   |
+|        1002 | Sarah      | Wilson    | sarah.wilson@email.com    | 2020-05-20  | Active   |
+|        1003 | Michael    | Davis     | michael.davis@email.com   | 2018-11-30  | Inactive |
+|        1004 | Jennifer   | Garcia    | jennifer.garcia@email.com | 2021-01-05  | Active   |
+|        1005 | Robert     | Martinez  | robert.martinez@email.com | 2019-08-22  | Active   |
++-------------+------------+-----------+---------------------------+-------------+----------+
+5 rows in set (0.00 sec)
+
+mysql> -- Basic UNION Examples
+mysql> -- ====================================================================
+mysql> -- Example 1: UNION vs UNION ALL
+mysql> -- Get a list of all employees from both locations (without duplicates)
+mysql> 
+mysql> select first_name ,last_name department from headquarters_employees
+    -> union
+    -> select first_name ,last_name department from branch_employees;
++------------+------------+
+| first_name | department |
++------------+------------+
+| John       | Smith      |
+| Mary       | Johnson    |
+| Robert     | Williams   |
+| Susan      | Brown      |
+| Michael    | Davis      |
+| James      | Wilson     |
+| Patricia   | Moore      |
+| Linda      | Taylor     |
+| Elizabeth  | Anderson   |
++------------+------------+
+9 rows in set (0.00 sec)
+
+mysql> -- Get a list of all employees from both locations (including duplicates)
+mysql> select first_name ,last_name department from headquarters_employees union all select first_name ,last_name department from branch_employees;
++------------+------------+
+| first_name | department |
++------------+------------+
+| John       | Smith      |
+| Mary       | Johnson    |
+| Robert     | Williams   |
+| Susan      | Brown      |
+| Michael    | Davis      |
+| James      | Wilson     |
+| Patricia   | Moore      |
+| Linda      | Taylor     |
+| Robert     | Williams   |
+| Elizabeth  | Anderson   |
++------------+------------+
+10 rows in set (0.00 sec)
+
+mysql> SELECT first_name, last_name, email FROM headquarters_employees
+    -> UNION ALL
+    -> SELECT first_name, last_name, email FROM branch_employees;
++------------+-----------+--------------------------------+
+| first_name | last_name | email                          |
++------------+-----------+--------------------------------+
+| John       | Smith     | john.smith@company.com         |
+| Mary       | Johnson   | mary.johnson@company.com       |
+| Robert     | Williams  | robert.williams@company.com    |
+| Susan      | Brown     | susan.brown@company.com        |
+| Michael    | Davis     | michael.davis@company.com      |
+| James      | Wilson    | james.wilson@company.com       |
+| Patricia   | Moore     | patricia.moore@company.com     |
+| Linda      | Taylor    | linda.taylor@company.com       |
+| Robert     | Williams  | robert.williams@company.com    |
+| Elizabeth  | Anderson  | elizabeth.anderson@company.com |
++------------+-----------+--------------------------------+
+10 rows in set (0.00 sec)
+
+mysql> -- Example 2: Combining full tables
+mysql> SELECT * FROM headquarters_employees
+    -> UNION ALL
+    -> SELECT * FROM branch_employees;
++-------------+------------+-----------+--------------------------------+------------+------------+----------+
+| employee_id | first_name | last_name | email                          | hire_date  | department | salary   |
++-------------+------------+-----------+--------------------------------+------------+------------+----------+
+|         101 | John       | Smith     | john.smith@company.com         | 2018-03-15 | IT         | 75000.00 |
+|         102 | Mary       | Johnson   | mary.johnson@company.com       | 2019-06-22 | HR         | 65000.00 |
+|         103 | Robert     | Williams  | robert.williams@company.com    | 2017-11-08 | Finance    | 82000.00 |
+|         104 | Susan      | Brown     | susan.brown@company.com        | 2020-01-30 | Marketing  | 68000.00 |
+|         105 | Michael    | Davis     | michael.davis@company.com      | 2018-09-12 | IT         | 78000.00 |
+|         201 | James      | Wilson    | james.wilson@company.com       | 2019-04-18 | Sales      | 62000.00 |
+|         202 | Patricia   | Moore     | patricia.moore@company.com     | 2020-07-25 | Marketing  | 59000.00 |
+|         203 | Linda      | Taylor    | linda.taylor@company.com       | 2018-08-15 | HR         | 61000.00 |
+|         204 | Robert     | Williams  | robert.williams@company.com    | 2017-11-08 | Finance    | 82000.00 |
+|         205 | Elizabeth  | Anderson  | elizabeth.anderson@company.com | 2019-12-03 | Sales      | 64000.00 |
++-------------+------------+-----------+--------------------------------+------------+------------+----------+
+10 rows in set (0.00 sec)
+
+mysql> -- Advanced UNION Examples
+mysql> -- ====================================================================
+mysql> -- Example 3: Adding a descriptor column
+mysql> -- Combine employee and customer contact information with a type indicator
+mysql> SELECT first_name, last_name, email, 'Employee' AS contact_type
+    -> FROM headquarters_employees
+    -> UNION
+    -> SELECT first_name, last_name, email, 'Customer' AS contact_type
+    -> FROM customers;
++------------+-----------+-----------------------------+--------------+
+| first_name | last_name | email                       | contact_type |
++------------+-----------+-----------------------------+--------------+
+| John       | Smith     | john.smith@company.com      | Employee     |
+| Mary       | Johnson   | mary.johnson@company.com    | Employee     |
+| Robert     | Williams  | robert.williams@company.com | Employee     |
+| Susan      | Brown     | susan.brown@company.com     | Employee     |
+| Michael    | Davis     | michael.davis@company.com   | Employee     |
+| David      | Miller    | david.miller@email.com      | Customer     |
+| Sarah      | Wilson    | sarah.wilson@email.com      | Customer     |
+| Michael    | Davis     | michael.davis@email.com     | Customer     |
+| Jennifer   | Garcia    | jennifer.garcia@email.com   | Customer     |
+| Robert     | Martinez  | robert.martinez@email.com   | Customer     |
++------------+-----------+-----------------------------+--------------+
+10 rows in set (0.00 sec)
+
+mysql> -- Example 4: Ordering results after UNION
+mysql> -- Get all employees sorted by last name
+mysql> SELECT employee_id, first_name, last_name, department
+    -> FROM headquarters_employees
+    -> UNION
+    -> SELECT employee_id, first_name, last_name, department
+    -> FROM branch_employees
+    -> ORDER BY last_name;
++-------------+------------+-----------+------------+
+| employee_id | first_name | last_name | department |
++-------------+------------+-----------+------------+
+|         205 | Elizabeth  | Anderson  | Sales      |
+|         104 | Susan      | Brown     | Marketing  |
+|         105 | Michael    | Davis     | IT         |
+|         102 | Mary       | Johnson   | HR         |
+|         202 | Patricia   | Moore     | Marketing  |
+|         101 | John       | Smith     | IT         |
+|         203 | Linda      | Taylor    | HR         |
+|         103 | Robert     | Williams  | Finance    |
+|         204 | Robert     | Williams  | Finance    |
+|         201 | James      | Wilson    | Sales      |
++-------------+------------+-----------+------------+
+10 rows in set (0.00 sec)
+
+mysql> -- Example 5: Filtering before UNION
+mysql> -- Get employees with salary over 70000
+mysql> SELECT employee_id, first_name, last_name, department, salary
+    -> FROM headquarters_employees
+    -> WHERE salary > 70000
+    -> UNION
+    -> SELECT employee_id, first_name, last_name, department, salary
+    -> FROM branch_employees
+    -> WHERE salary > 70000
+    -> ORDER BY salary DESC;
++-------------+------------+-----------+------------+----------+
+| employee_id | first_name | last_name | department | salary   |
++-------------+------------+-----------+------------+----------+
+|         103 | Robert     | Williams  | Finance    | 82000.00 |
+|         204 | Robert     | Williams  | Finance    | 82000.00 |
+|         105 | Michael    | Davis     | IT         | 78000.00 |
+|         101 | John       | Smith     | IT         | 75000.00 |
++-------------+------------+-----------+------------+----------+
+4 rows in set (0.01 sec)
+
+mysql> -- Handling Different Column Structures
+mysql> -- ====================================================================
+mysql> -- Example 6: Handling different table structures with NULL values
+mysql> SELECT employee_id, first_name, last_name, department, salary, NULL AS status
+    -> FROM headquarters_employees
+    -> UNION
+    -> SELECT customer_id, first_name, last_name, NULL, NULL, status
+    -> FROM customers
+    -> ORDER BY first_name, last_name;
++-------------+------------+-----------+------------+----------+----------+
+| employee_id | first_name | last_name | department | salary   | status   |
++-------------+------------+-----------+------------+----------+----------+
+|        1001 | David      | Miller    | NULL       |     NULL | Active   |
+|        1004 | Jennifer   | Garcia    | NULL       |     NULL | Active   |
+|         101 | John       | Smith     | IT         | 75000.00 | NULL     |
+|         102 | Mary       | Johnson   | HR         | 65000.00 | NULL     |
+|         105 | Michael    | Davis     | IT         | 78000.00 | NULL     |
+|        1003 | Michael    | Davis     | NULL       |     NULL | Inactive |
+|        1005 | Robert     | Martinez  | NULL       |     NULL | Active   |
+|         103 | Robert     | Williams  | Finance    | 82000.00 | NULL     |
+|        1002 | Sarah      | Wilson    | NULL       |     NULL | Active   |
+|         104 | Susan      | Brown     | Marketing  | 68000.00 | NULL     |
++-------------+------------+-----------+------------+----------+----------+
+10 rows in set (0.00 sec)
+
+mysql> -- ====================================================================
+mysql> -- Example 7: Finding all unique departments across locations
+mysql> SELECT department
+    -> FROM headquarters_employees
+    -> UNION
+    -> SELECT department
+    -> FROM branch_employees;
++------------+
+| department |
++------------+
+| IT         |
+| HR         |
+| Finance    |
+| Marketing  |
+| Sales      |
++------------+
+5 rows in set (0.00 sec)
 
 
 
