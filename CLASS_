@@ -296,3 +296,101 @@ SELECT * FROM PRODUCTS;
 -- NO ACTION    | Fails parent deletion.       | Fails parent update.         | Default database safety net.
 -- ============================================================================================
 **/
+
+
+
+-- ====================================================================================================
+-- WINDOS FUNCTION 
+
+CREATE DATABASE WINDOWS;
+
+USE WINDOWS;
+
+
+/**
+WINDOW FUNCTION ARE THE FUNCTION WHICH ARE USE TO PERFORM THE CALCULATION SET OF ROWS 
+THESE CALCULATION ARE DONE IN RELATION TO THE CURRENT ROW
+WINDOW FUNCTION DONOT COLLAPS THE DATA LIKE GROUP BY 
+
+OVER (SET OF ROWS ) - COMPULSERY - ALL ROWS
+
+
+**/
+
+
+-- OVER - 3 OPTIONS
+
+CREATE TABLE EMPLOYEES(ID INT , NAME VARCHAR(20) , DEPT VARCHAR(20) , SALARY INT ) ;
+
+INSERT INTO EMPLOYEES VALUES(1,'A','HR',100),(2,'B','HR',200),(3,'C','MARKETING',300),(4,'D','MARKETING',400),(5,'E','HR',500);
+
+ select sum(salary) from employees; -- aggreagate
+select dept, sum(salary) from employees; -- Error ( without group by koi aur column select nhi ho sakta)
+
+SELECT * FROM EMPLOYEES;
+
+-- -----------------------------------
+SELECT *,SUM(SALARY) OVER() FROM EMPLOYEES; -- SET OF ROW OVER DEVIDE ROWS
+SELECT *,SUM(SALARY) OVER(), MAX(SALARY) OVER() FROM EMPLOYEES; 
+
+SELECT *,SUM(SALARY) OVER() , SUM(SALARY) OVER() - SALARY AS DIFFERENCE  FROM EMPLOYEES; 
+
+-- PARTION BY
+SELECT *,SUM(SALARY) OVER() , SUM(SALARY) OVER(PARTITION BY DEPT)  FROM EMPLOYEES; 
+
+
+-- QUESTIONS
+
+CREATE TABLE employee_sales (
+    sale_id INT PRIMARY KEY,
+    employee_name VARCHAR(50),
+    department VARCHAR(50),
+    sale_date DATE,
+    sales_amount DECIMAL(10,2)
+);
+
+
+
+INSERT INTO employee_sales
+    (sale_id, employee_name, department, sale_date, sales_amount)
+VALUES
+    (1,  'Alice', 'Electronics', '2026-01-05', 1200.00),
+    (2,  'Bob',   'Electronics', '2026-01-08', 1800.00),
+    (3,  'Alice', 'Electronics', '2026-01-15', 1500.00),
+    (4,  'Charlie','Electronics','2026-01-20', 1800.00),
+    (5,  'Bob',   'Electronics', '2026-01-25', 2200.00),
+
+    (6,  'David', 'Furniture',   '2026-01-03', 2500.00),
+    (7,  'Emma',  'Furniture',   '2026-01-10', 1800.00),
+    (8,  'David', 'Furniture',   '2026-01-18', 3000.00),
+    (9,  'Frank', 'Furniture',   '2026-01-22', 1800.00),
+    (10, 'Emma',  'Furniture',   '2026-01-28', 3200.00),
+
+    (11, 'George','Clothing',    '2026-01-04', 900.00),
+    (12, 'Helen', 'Clothing',    '2026-01-09', 1400.00),
+    (13, 'George','Clothing',    '2026-01-16', 1100.00),
+    (14, 'Helen', 'Clothing',    '2026-01-21', 1400.00),
+    (15, 'Ian',   'Clothing',    '2026-01-27', 2000.00);
+
+SELECT EMPLOYEE_NAME , DEPARTMENT , SALES_AMOUNT, SUM(SALES_AMOUNT) OVER(PARTITION BY DEPARTMENT) FROM EMPLOYEE_SALES;
+SELECT EMPLOYEE_NAME , DEPARTMENT , SALES_AMOUNT, MIN(SALES_AMOUNT) OVER(PARTITION BY DEPARTMENT) FROM EMPLOYEE_SALES;
+SELECT EMPLOYEE_NAME , DEPARTMENT , SALES_AMOUNT, MAX(SALES_AMOUNT) OVER(PARTITION BY DEPARTMENT) FROM EMPLOYEE_SALES;
+SELECT EMPLOYEE_NAME , DEPARTMENT , SALES_AMOUNT, COUNT(SALES_AMOUNT) OVER(PARTITION BY DEPARTMENT) FROM EMPLOYEE_SALES;
+
+SELECT EMPLOYEE_NAME,  DEPARTMENT , SALES_AMOUNT, SUM(SALES_AMOUNT) OVER(PARTITION BY EMPLOYEE_NAME ) FROM EMPLOYEE_SALES;
+
+SELECT AVG(SALES_AMOUNT) OVER(PARTITION BY DEPARTMENT)  - SALE_AMOUNT OVER(PARTITION BY DEPARTMENT) FROM EMPLOYEE_SALES;
+
+select employee_name, department, sales_amount, avg(sales_amount) over( partition by department) as dept_avg,
+round(sales_amount - avg(sales_amount) over(partition by department)) from employee_sales;
+
+
+SELECT DISTINCT DEPARTMENT , SUM(SALES_AMOUNT) OVER(PARTITION BY DEPARTMENT), SUM(SALES_AMOUNT) OVER() FROM EMPLOYEE_SALES;
+
+SELECT DISTINCT
+    DEPARTMENT,
+    SUM(SALES_AMOUNT) OVER(PARTITION BY DEPARTMENT) AS DEPT_SALES,
+    SUM(SALES_AMOUNT) OVER() AS TOTAL_SALES,
+    SUM(SALES_AMOUNT) OVER(PARTITION BY DEPARTMENT)
+        / SUM(SALES_AMOUNT) OVER() * 100 AS SALES_PERCENT
+FROM EMPLOYEE_SALES;
